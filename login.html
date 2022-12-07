@@ -58,15 +58,31 @@
     <form>
         <div class="container">
             <label>Username : </label>
-            <input type="text" placeholder="Enter Username" name="username" required>
+            <input id="username" type="text" placeholder="Enter Username" name="username" required>
             <label>Password : </label>
-            <input type="password" placeholder="Enter Password" name="password" required>
-            <button type="submit">Login</button>
+            <input id="password" type="password" placeholder="Enter Password" name="password" required>
+            <button type="submit" onclick="validate()">Login</button>
             <input type="checkbox" checked="checked"> Remember me
             |
-            Forgot <a href="#"> password? </a>
+            <a href="#">Forgot password? </a>
         </div>
     </form>
+
+    <script>
+        function validate() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            console.log(username,password)
+
+            if (username == "root" && password == "root123") {
+                window.location = "admin.html";
+            }
+            else {
+                alert("Invalid username or password");
+            }
+            return false;
+        }
+    </script>
 </body>
 
 </html>
