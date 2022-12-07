@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+
+    <style>
+        #WELCOME {
+            color: darkslategrey;
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <h1 id="WELCOME"> Welcome to IVI's Company </h1>
+    </center>
+
+    <center>
+        <h2 onclick="about()" style="border: 1px solid #CCC;">ABOUT US</h2>
+        <h3 id="desc" style="display: none;">
+            <pre>
+        Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+        Voluptatem perspiciatis iste explicabo similique.
+        Itaque maiores minima quod! Enim ut maiores, doloremque, quos voluptatem beatae natus, eveniet accusantium quia nam magnam.
+            </pre>
+        </h3>
+    </center>
+
+    <center>
+        <button onclick="location.href = 'login.html'" style="color:burlywood ; background-color:darkblue ; height:5em;width:100%;">Login</button>
+    </center>
+
+    <script>
+        function about(){
+            x = document.getElementById("desc")
+            if (x.style.display == "block"){
+                x.style.display = "none"
+            }
+            else{
+                x.style.display = "block"
+            }
+        }
+    </script>
+</body>
+
+</html>
