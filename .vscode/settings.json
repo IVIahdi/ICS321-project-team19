@@ -1,4 +1,12 @@
 {
     "liveServer.settings.port": 5501,
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "IVI",
+            "database": "C:\\Users\\HP\\Desktop\\IVI\\IVIdb"
+        }
+    ]
 }
