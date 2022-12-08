@@ -61,7 +61,7 @@
             <input id="username" type="text" placeholder="Enter Username" name="username" required>
             <label>Password : </label>
             <input id="password" type="password" placeholder="Enter Password" name="password" required>
-            <button type="submit" onclick="validate()">Login</button>
+            <button onclick="validate()">Login</button>
             <input type="checkbox" checked="checked"> Remember me
             |
             <a href="#">Forgot password? </a>
@@ -73,8 +73,9 @@
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
-            if (username == "root" && password == "password1122") {
-                window.location = "admin.html";
+            if (username == "root" && password == "root123") {
+                // window.location = "admin.html";
+                window.open("admin.html")
                 alert("Login successfully");
             }
             else {
