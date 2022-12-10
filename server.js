@@ -14,17 +14,21 @@ server.get('/login', (req,res)=>{
 })
 
 server.get('/admin', (req,res)=>{
-    var q = "selcet * from package"
+    res.sendFile(__dirname + '/admin.html')
+})
+
+server.get('/admin/reports', (req,res)=>{
+    var q = "show tables;"
     db.query(q, (e,d)=>{
         if (e){
             throw e
         }
         else {
-            res.render(q)
+            res.sendFile(__dirname + '/reports.html')
         }
     })
-    res.sendFile(__dirname + '/admin.html')
 })
+
 
 
 server.use(express.static("public"));
