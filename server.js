@@ -31,7 +31,19 @@ server.get('/reports/packsinfo', (req,res)=>{
             throw e
         }
         else {
-            res.render('packages_info.ejs', {data: d, messages: 'A'})
+            res.render('packages_info.ejs', {data: d})
+        }
+    })
+})
+
+server.get('/reports/packsnumber', (req,res)=>{
+    var q = 'select * from package;'
+    db.query(q, (e,d)=>{
+        if (e){
+            throw e
+        }
+        else {
+            res.render('packages_number.ejs', {data: d})
         }
     })
 })
