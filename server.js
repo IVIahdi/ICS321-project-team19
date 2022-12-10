@@ -21,14 +21,17 @@ server.get('/admin', (req,res)=>{
 })
 
 server.get('/admin/reports', (req,res)=>{
+    res.sendFile(__dirname + '/reports.html')
+});
+
+server.get('/reports/packsinfo', (req,res)=>{
     var q = 'select * from package;'
     db.query(q, (e,d)=>{
         if (e){
             throw e
         }
         else {
-            // res.sendFile(__dirname + '/reports.html')
-            res.render('profile.ejs', {data: d, messages: 'A'})
+            res.render('packages_info.ejs', {data: d, messages: 'A'})
         }
     })
 })
