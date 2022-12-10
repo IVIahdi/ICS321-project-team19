@@ -52,6 +52,30 @@ server.get('/admin/addpackage', (req,res)=>{
     res.sendFile(__dirname + '/admin/addPackage.html')
 })
 
+server.post('/add', (req,res)=>{
+    var pn = req.body.package_number;
+    var w = req.body.weight;
+    var d = req.body.destination;
+    var dimensions = req.body.dimensions;
+    var c = req.body.category;
+    var ia = req.body.insurance_amount;
+    var dd = req.body.delivery_date;
+
+    var q = `insert into package values(${pn},${w},"${d}","${dimensions}","${c}",${ia},"${dd}")`
+
+    db.query(q,(e,d)=>{
+        if (e){
+            throw e
+        }
+        else{
+            res.redirect('/admin/reports')
+        }
+    })
+
+
+
+})
+
 
 
 server.use(express.static("public"));
