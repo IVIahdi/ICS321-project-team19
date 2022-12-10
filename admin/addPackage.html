@@ -1,12 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
-    
+    <center>
+        <h2>Add Package</h2>
+        <form action="">
+            <label for="package_number">package number:</label>
+            <input type="number" name="package_number" id="package_number"> <br>
+
+            <label for="weight">weight:</label>
+            <input type="number" name="weight" id="weight"> <br>
+
+            <label for="destination">destination:</label>
+            <input type="text" name="destination" id="destination"><br>
+            
+            <label for="dimensions">dimensions:</label>
+            <input type="text" name="dimensions" id="dimensions"><br>
+
+            <label for="category">category:</label>
+            <select name="category" id="">
+                <option value="Regular">Regular</option>
+                <option value="Fragile">Fragile</option>
+                <option value="Liquid">Liquid</option>
+                <option value="Chemical">Chemical</option>
+            </select> <br>
+
+            <label for="insurance_amount">insurance_amount:</label>
+            <input type="number" name="insurance_amount" id="insurance_amount"><br>
+
+            <label for="delivery_date">delivery_date:</label>
+            <input type="text" name="delivery_date" id="delivery_date">
+        </form>
+    </center>
 </body>
+
 </html>

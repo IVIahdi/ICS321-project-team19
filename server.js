@@ -48,6 +48,10 @@ server.get('/reports/packsnumber', (req,res)=>{
     })
 })
 
+server.get('/admin/addpackage', (req,res)=>{
+    res.sendFile(__dirname + '/admin/addPackage.html')
+})
+
 
 
 server.use(express.static("public"));
