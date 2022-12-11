@@ -8,66 +8,103 @@ const port = 8000;
 server.set('view engine', 'ejs')
 server.use(express.urlencoded({ extended: false }));
 
-server.get('/', (req,res)=>{
+server.get('/', (req, res) => {
     res.sendFile(__dirname + '/main.html')
 })
 
-server.get('/login', (req,res)=>{
+server.get('/login', (req, res) => {
     res.sendFile(__dirname + '/login.html')
 })
 
-server.get('/admin', (req,res)=>{
+server.get('/admin', (req, res) => {
     res.sendFile(__dirname + '/admin.html')
 })
 
-server.get('/admin/reports', (req,res)=>{
+server.get('/admin/reports', (req, res) => {
     res.sendFile(__dirname + '/reports.html')
 });
 
-server.get('/reports/packsinfo', (req,res)=>{
+server.get('/reports/packsinfo', (req, res) => {
     var q = 'select * from package;'
-    db.query(q, (e,d)=>{
-        if (e){
+    db.query(q, (e, d) => {
+        if (e) {
             throw e
         }
         else {
-            res.render('packages_info.ejs', {data: d})
+            res.render('packages_info.ejs', { data: d })
         }
     })
 })
 
-server.get('/reports/packsnumber', (req,res)=>{
+server.get('/reports/packsnumber', (req, res) => {
     var q = 'select * from package;'
-    db.query(q, (e,d)=>{
-        if (e){
+    db.query(q, (e, d) => {
+        if (e) {
             throw e
         }
         else {
-            res.render('packages_number.ejs', {data: d})
+            res.render('packages_number.ejs', { data: d })
         }
     })
 })
 
-server.get('/admin/edit/:package_number', (req,res)=>{
+server.get('/admin/edit/:package_number', (req, res) => {
     var package_number = req.params.package_number
     var q = `select * from package where package_number = ${package_number}`
 
-    db.query(q, (e,d)=>{
+    db.query(q, (e, d) => {
         if (e) throw e;
-        else{res.render('editPackage.ejs', {Action: 'Edit',d: d[0]})}
+        else { res.render('editPackage.ejs', { Action: 'Edit', d: d[0] }) }
     })
 })
 
-server.get('/admin/removePackage/:package_number', (req,res)=>{
-    res.sendFile(__dirname + '/admin/removePackage.html')
+server.post('/edit/:package_number', (req, res) => {
+    var package_number = req.params.package_number;
+
+    var w = req.body.weight;
+    var d = req.body.destination;
+    var dimensions = req.body.dimensions;
+    var c = req.body.category;
+    var ia = req.body.insurance_amount;
+    var dd = req.body.delivery_date;
+
+    q = `update package
+    set weight = ${w}, destination = "${d}",
+    dimensions = "${dimensions}",
+    category = "${c}",
+    insurance_amount = ${ia},
+    delivery_date = "${dd}" where package_number = ${package_number}
+
+    `;
+
+    db.query(q, (error, data) => {
+        if (error) { throw error; }
+        else {
+            res.redirect('/admin/reports')
+        }
+    })
+
+
+
+
 })
 
-server.get('/admin/addpackage', (req,res)=>{
+server.get('/admin/remove/:package_number', (req, res) => {
+    var package_number = req.params.package_number;
+    var q = `delete from package where package_number = ${package_number}`
+    db.query(q,(e,d)=>{
+        if (e){throw e}
+        else{
+            res.redirect('/admin/reports')
+        }
+    })
+})
+
+server.get('/admin/addpackage', (req, res) => {
     res.sendFile(__dirname + '/admin/addPackage.html')
 })
 
-server.post('/add', (req,res)=>{
-    console.log(req.body);
+server.post('/add', (req, res) => {
     var pn = req.body.package_number;
     var w = req.body.weight;
     var d = req.body.destination;
@@ -78,11 +115,11 @@ server.post('/add', (req,res)=>{
 
     var q = `insert into package values(${pn},${w},"${d}","${dimensions}",${ia},"${dd}","${c}")`
 
-    db.query(q,(e,d)=>{
-        if (e){
+    db.query(q, (e, d) => {
+        if (e) {
             throw e
         }
-        else{
+        else {
             res.redirect('/admin/reports')
         }
     })
@@ -91,10 +128,23 @@ server.post('/add', (req,res)=>{
 
 })
 
+server.get('/admin/users', (req,res)=>{
+    var q = 'select * from user;'
+    db.query(q, (e, d) => {
+        if (e) {
+            throw e
+        }
+        else {
+            res.render('users_info.ejs', { data: d })
+        }
+    })
+})
+
 
 
 server.use(express.static("public"));
-server.listen(()=>{
-    server.listen(port, ()=>{
-        console.log(`http://localhost:${port}`);})
-    });
+server.listen(() => {
+    server.listen(port, () => {
+        console.log(`http://localhost:${port}`);
+    })
+});

@@ -2,42 +2,50 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title></title>
 </head>
 
 <body>
     <div class="card">
-        <div class="card-header">Sample Form</div>
+        <div class="card-header">Edit</div>
         <div class="card-body">
             <form method="POST" action="/edit/<%= d.package_number %>">
+                
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label>package number</label>
-                            <input type="text" name="package_number" id="package_number" class="form-control"
+                            <input type="number" name="package_number" id="package_number" class="form-control"
                                 value="<%= d.package_number %>" />
                         </div>
                     </div>
+
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label>weight</label>
-                            <input type="text" name="weight" id="weight" class="form-control"
+                            <input type="number" name="weight" id="weight" class="form-control"
                                 value="<%= d.weight %>" />
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label>destination</label>
-                            <input type="number" name="destination" id="destination" class="form-control"
+                            <input type="text" name="destination" id="destination" class="form-control"
                                 value="<%= d.destination %>" />
                         </div>
                     </div>
                 </div>
+
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label>category</label>
@@ -49,15 +57,17 @@
                         </select>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label>dimensions</label>
-                            <input type="number" name="dimensions" id="dimensions" class="form-control"
+                            <input type="text" name="dimensions" id="dimensions" class="form-control"
                                 value="<%= d.dimensions %>" />
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
@@ -72,19 +82,10 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label>delivery_date</label>
-                            <input type="number" name="delivery_date" id="delivery_date" class="form-control"
+                            <input type="text" name="delivery_date" id="delivery_date" class="form-control"
                                 value="<%= d.delivery_date %>" />
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label>delivery_date</label>
-                                <input type="number" name="delivery_date" id="delivery_date" class="form-control"
-                                    value="<%= d.delivery_date %>" />
-                            </div>
-                        </div>
 
                 <div class="mb-3">
                     <input type="submit" name="submit_button" class="btn btn-primary" value="Edit" />
