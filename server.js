@@ -6,6 +6,7 @@ const db = require(__dirname + '/db');
 const server = express();
 const port = 8000;
 server.set('view engine', 'ejs')
+server.use(express.urlencoded({ extended: false }));
 
 server.get('/', (req,res)=>{
     res.sendFile(__dirname + '/main.html')
@@ -47,11 +48,25 @@ server.get('/reports/packsnumber', (req,res)=>{
     })
 })
 
+server.get('/admin/edit/:package_number', (req,res)=>{
+    var package_number = req.params.package_number
+    var q = `select * from package where package_number = ${package_number}`
+
+    db.query(q, (e,d)=>{
+        if (e) throw e;
+        else{res.render('editPackage.ejs', {Action: 'Edit',d: d[0]})}
+    })
+})
+
+server.get('/admin/removePackage/:package_number', (req,res)=>{
+    res.sendFile(__dirname + '/admin/removePackage.html')
+})
+
 server.get('/admin/addpackage', (req,res)=>{
     res.sendFile(__dirname + '/admin/addPackage.html')
 })
 
-server.post('/add', express.urlencoded({extended: false}), (req,res)=>{
+server.post('/add', (req,res)=>{
     console.log(req.body);
     var pn = req.body.package_number;
     var w = req.body.weight;

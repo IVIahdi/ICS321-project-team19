@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="card">
+        <div class="card-header">Sample Form</div>
+        <div class="card-body">
+            <form method="POST" action="/edit/<%= d.package_number %>">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label>package number</label>
+                            <input type="text" name="package_number" id="package_number" class="form-control"
+                                value="<%= d.package_number %>" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label>weight</label>
+                            <input type="text" name="weight" id="weight" class="form-control"
+                                value="<%= d.weight %>" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label>destination</label>
+                            <input type="number" name="destination" id="destination" class="form-control"
+                                value="<%= d.destination %>" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label>category</label>
+                        <select name="category" id="category" class="form-control">
+                            <option value="Regular">Regular</option>
+                            <option value="Fragile">Fragile</option>
+                            <option value="Liquid">Liquid</option>
+                            <option value="Chemical">Chemical</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label>dimensions</label>
+                            <input type="number" name="dimensions" id="dimensions" class="form-control"
+                                value="<%= d.dimensions %>" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label>insurance_amount</label>
+                            <input type="number" name="insurance_amount" id="insurance_amount" class="form-control"
+                                value="<%= d.insurance_amount %>" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label>delivery_date</label>
+                            <input type="number" name="delivery_date" id="delivery_date" class="form-control"
+                                value="<%= d.delivery_date %>" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label>delivery_date</label>
+                                <input type="number" name="delivery_date" id="delivery_date" class="form-control"
+                                    value="<%= d.delivery_date %>" />
+                            </div>
+                        </div>
+
+                <div class="mb-3">
+                    <input type="submit" name="submit_button" class="btn btn-primary" value="Edit" />
+                </div>
+            </form>
+            <script>
+                document.getElementById('category').value = "<%= d.category %>";
+            </script>
+        </div>
+    </div>
+</body>
+
+</html>
