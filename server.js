@@ -1,6 +1,5 @@
 const express = require("express");
 const db = require(__dirname + '/db');
-console.log(db.query("select * from package"))
 
 
 
@@ -52,7 +51,8 @@ server.get('/admin/addpackage', (req,res)=>{
     res.sendFile(__dirname + '/admin/addPackage.html')
 })
 
-server.post('/add', (req,res)=>{
+server.post('/add', express.urlencoded({extended: false}), (req,res)=>{
+    console.log(req.body);
     var pn = req.body.package_number;
     var w = req.body.weight;
     var d = req.body.destination;
@@ -61,7 +61,7 @@ server.post('/add', (req,res)=>{
     var ia = req.body.insurance_amount;
     var dd = req.body.delivery_date;
 
-    var q = `insert into package values(${pn},${w},"${d}","${dimensions}","${c}",${ia},"${dd}")`
+    var q = `insert into package values(${pn},${w},"${d}","${dimensions}",${ia},"${dd}","${c}")`
 
     db.query(q,(e,d)=>{
         if (e){
