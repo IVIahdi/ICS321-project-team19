@@ -1,20 +1,73 @@
 const express = require("express");
 const db = require(__dirname + '/db');
 
+var session = require('express-session');
+
 
 
 const server = express();
 const port = 8000;
 server.set('view engine', 'ejs')
 server.use(express.urlencoded({ extended: false }));
+server.use(session({
+    secret: 'webslesson',
+    resave: true,
+    saveUninitialized: true
+}));
 
 server.get('/', (req, res) => {
-    res.sendFile(__dirname + '/main.html')
+    res.render('index', { title: 'Welcome to IVI\'s company', session: req.session })
 })
 
-server.get('/login', (req, res) => {
-    res.sendFile(__dirname + '/login.html')
-})
+
+server.post('/login', function (request, response, next) {
+
+    var username = request.body.username;
+
+    var password = request.body.password;
+
+    if (username && password) {
+        query = `
+        SELECT * FROM user_login 
+        WHERE username = "${username}"
+        `;
+
+        db.query(query, function (error, data) {
+
+            if (data.length > 0) {
+                for (var count = 0; count < data.length; count++) {
+                    if (data[count].user_password == password) {
+                        request.session.user_id = data[count].user_id;
+                        request.session.role = data[count].role;
+
+                        response.redirect("/");
+                    }
+                    else {
+                        response.send('Incorrect Password');
+                    }
+                }
+            }
+            else {
+                response.send('Incorrect Username');
+            }
+            response.end();
+        });
+    }
+    else {
+        response.send('Please Enter Username and Password Details');
+        response.end();
+    }
+
+});
+
+server.get('/logout', function (request, response, next) {
+
+    request.session.destroy();
+
+    response.redirect("/");
+
+});
+
 
 server.get('/admin', (req, res) => {
     res.sendFile(__dirname + '/admin.html')
@@ -48,7 +101,9 @@ server.get('/reports/packsnumber', (req, res) => {
     })
 })
 
-
+server.get('/customer', (req,res)=>{
+    res.sendFile(__dirname+'/customer.html');
+})
 
 
 server.get('/admin/edit/:package_number', (req, res) => {
@@ -95,9 +150,9 @@ server.post('/edit/:package_number', (req, res) => {
 server.get('/admin/remove/:package_number', (req, res) => {
     var package_number = req.params.package_number;
     var q = `delete from package where package_number = ${package_number}`
-    db.query(q,(e,d)=>{
-        if (e){throw e}
-        else{
+    db.query(q, (e, d) => {
+        if (e) { throw e }
+        else {
             res.redirect('/admin/reports')
         }
     })
@@ -134,148 +189,127 @@ server.post('/add', (req, res) => {
 
 
 
-server.get("/admin/users", function(request, response, next){
+server.get("/admin/users", function (request, response, next) {
 
-	var query = "SELECT * FROM user ORDER BY id DESC";
+    var query = "SELECT * FROM user_login ORDER BY user_id DESC";
 
-	db.query(query, function(error, data){
+    db.query(query, function (error, data) {
 
-		if(error)
-		{
-			throw error; 
-		}
-		else
-		{
-			response.render('users', {title:'Users info', action:'list', data:data});
-		}
+        if (error) {
+            throw error;
+        }
+        else {
+            response.render('users', { title: 'Users info', action: 'list', data: data });
+        }
 
-	});
+    });
 
 });
 
-server.get("/users/addU", function(request, response, next){
+server.get("/users/addU", function (request, response, next) {
 
-	response.render("users", {title:'Insert User', action:'addU'});
+    response.render("users", { title: 'Insert User', action: 'addU' });
 
 });
 
-server.post("/addU", function(request, response, next){
+server.post("/addU", function (request, response, next) {
 
-	var id = request.body.id;
+    var id = request.body.user_id;
 
-	var username = request.body.username;
+    var username = request.body.username;
 
-	var password = request.body.password;
+    var password = request.body.user_password;
 
-    var email =  request.body.email;
+    var email = request.body.user_email;
 
-	var query = `
-	INSERT INTO user 
-	VALUES(${id}, "${username}", "${password}", "${email}")
+    var role = request.body.role;
+
+    var query = `
+	INSERT INTO user_login 
+	VALUES(${id}, "${username}","${email}", "${password}","${role}")
 	`;
 
-	db.query(query, function(error, data){
+    db.query(query, function (error, data) {
 
-		if(error)
-		{
-			throw error;
-		}	
-		else
-		{
-			response.redirect("/admin");
-		}
+        if (error) {
+            throw error;
+        }
+        else {
+            response.redirect("/admin");
+        }
 
-	});
+    });
 
 });
 
-server.get('/editU/:id', function(request, response, next){
+server.get('/editU/:user_id', function (request, response, next) {
 
-	var id = request.params.id;
+    var id = request.params.user_id;
 
-	var query = `SELECT * FROM user WHERE id = ${id}`;
+    var query = `SELECT * FROM user_login WHERE user_id = ${id}`;
 
-	db.query(query, function(error, data){
+    db.query(query, function (error, data) {
 
-		response.render('users', {title: 'Edit User', action:'editU', data:data[0]});
+        response.render('users', { title: 'Edit User', action: 'editU', data: data[0] });
 
-	});
+    });
 
 });
 
-server.post('/editU/:id', function(request, response, next){
+server.post('/editU/:user_id', function (request, response, next) {
 
-	var id = request.params.id;
+    var id = request.params.user_id;
 
-	var username = request.body.username;
+    var username = request.body.username;
 
-	var password = request.body.password;
+    var password = request.body.user_password;
 
-    var email =  request.body.email;
+    var email = request.body.user_email;
+    var role = request.body.role;
 
-	var query = `
-	UPDATE user 
-	SET id = ${id}, 
+    var query = `
+	UPDATE user_login 
+	SET user_id = ${id}, 
 	username = "${username}", 
-	password = "${password}",
-    email = "${email}"
-	WHERE id = ${id}
+	user_password = "${password}",
+    user_email = "${email}",
+    role = "${role}"
+	WHERE user_id = ${id}
 	`;
 
-	db.query(query, function(error, data){
+    db.query(query, function (error, data) {
 
-		if(error)
-		{
-			throw error;
-		}
-		else
-		{
-			response.redirect("/admin");
-		}
+        if (error) {
+            throw error;
+        }
+        else {
+            response.redirect("/admin");
+        }
 
-	});
+    });
 
 });
 
-server.get('/deleteU/:id', function(request, response, next){
+server.get('/deleteU/:user_id', function (request, response, next) {
 
-	var id = request.params.id; 
+    var id = request.params.user_id;
 
-	var query = `
-	DELETE FROM user WHERE id = ${id}
+    var query = `
+	DELETE FROM user_login WHERE user_id = ${id}
 	`;
 
-	db.query(query, function(error, data){
+    db.query(query, function (error, data) {
 
-		if(error)
-		{
-			throw error;
-		}
-		else
-		{
-			response.redirect("/admin");
-		}
+        if (error) {
+            throw error;
+        }
+        else {
+            response.redirect("/admin");
+        }
 
-	});
+    });
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
