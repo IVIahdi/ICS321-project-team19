@@ -48,6 +48,9 @@ server.get('/reports/packsnumber', (req, res) => {
     })
 })
 
+
+
+
 server.get('/admin/edit/:package_number', (req, res) => {
     var package_number = req.params.package_number
     var q = `select * from package where package_number = ${package_number}`
@@ -128,17 +131,149 @@ server.post('/add', (req, res) => {
 
 })
 
-server.get('/admin/users', (req,res)=>{
-    var q = 'select * from user;'
-    db.query(q, (e, d) => {
-        if (e) {
-            throw e
-        }
-        else {
-            res.render('users_info.ejs', { data: d })
-        }
-    })
-})
+
+
+
+server.get("/admin/users", function(request, response, next){
+
+	var query = "SELECT * FROM user ORDER BY id DESC";
+
+	db.query(query, function(error, data){
+
+		if(error)
+		{
+			throw error; 
+		}
+		else
+		{
+			response.render('users', {title:'Users info', action:'list', data:data});
+		}
+
+	});
+
+});
+
+server.get("/users/addU", function(request, response, next){
+
+	response.render("users", {title:'Insert User', action:'addU'});
+
+});
+
+server.post("/addU", function(request, response, next){
+
+	var id = request.body.id;
+
+	var username = request.body.username;
+
+	var password = request.body.password;
+    
+    console.log(id,username,password);
+
+	var query = `
+	INSERT INTO user 
+	VALUES (${id}, "${username}", "${password}")
+	`;
+
+	db.query(query, function(error, data){
+
+		if(error)
+		{
+			throw error;
+		}	
+		else
+		{
+			response.redirect("/admin");
+		}
+
+	});
+
+});
+
+server.get('/editU/:id', function(request, response, next){
+
+	var id = request.params.id;
+
+	var query = `SELECT * FROM user WHERE id = ${id}`;
+
+	db.query(query, function(error, data){
+
+		response.render('users', {title: 'Edit User', action:'editU', data:data[0]});
+
+	});
+
+});
+
+server.post('/editU/:id', function(request, response, next){
+
+	var id = request.params.id;
+
+	var username = request.body.username;
+
+	var password = request.body.password;
+
+	var query = `
+	UPDATE user 
+	SET id = ${id}, 
+	username = "${username}", 
+	password = "${password}"
+	WHERE id = ${id}
+	`;
+
+	db.query(query, function(error, data){
+
+		if(error)
+		{
+			throw error;
+		}
+		else
+		{
+			response.redirect("/admin");
+		}
+
+	});
+
+});
+
+server.get('/deleteU/:id', function(request, response, next){
+
+	var id = request.params.id; 
+
+	var query = `
+	DELETE FROM user WHERE id = ${id}
+	`;
+
+	db.query(query, function(error, data){
+
+		if(error)
+		{
+			throw error;
+		}
+		else
+		{
+			response.redirect("/admin");
+		}
+
+	});
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
