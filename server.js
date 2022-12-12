@@ -166,12 +166,12 @@ server.post("/addU", function(request, response, next){
 	var username = request.body.username;
 
 	var password = request.body.password;
-    
-    console.log(id,username,password);
+
+    var email =  request.body.email;
 
 	var query = `
 	INSERT INTO user 
-	VALUES (${id}, "${username}", "${password}")
+	VALUES(${id}, "${username}", "${password}", "${email}")
 	`;
 
 	db.query(query, function(error, data){
@@ -211,11 +211,14 @@ server.post('/editU/:id', function(request, response, next){
 
 	var password = request.body.password;
 
+    var email =  request.body.email;
+
 	var query = `
 	UPDATE user 
 	SET id = ${id}, 
 	username = "${username}", 
-	password = "${password}"
+	password = "${password}",
+    email = "${email}"
 	WHERE id = ${id}
 	`;
 
