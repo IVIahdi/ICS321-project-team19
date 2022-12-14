@@ -171,7 +171,7 @@ server.post('/add', (req, res) => {
     var ia = req.body.insurance_amount;
     var dd = req.body.delivery_date;
 
-    var q = `insert into package values(${pn},${w},"${d}","${dimensions}",${ia},"${dd}","${c}")`
+    var q = `insert into package values(${pn},"${d}",${w},"${dimensions}","${c}",${ia},"${dd}")`
 
     db.query(q, (e, d) => {
         if (e) {
