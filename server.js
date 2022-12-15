@@ -312,7 +312,9 @@ server.get('/deleteU/:user_id', function (request, response, next) {
 });
 
 
-
+server.get('/payments', (req,res)=>{
+    
+})
 
 server.use(express.static("public"));
 server.listen(() => {
