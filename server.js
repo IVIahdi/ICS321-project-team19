@@ -101,8 +101,8 @@ server.get('/reports/packsnumber', (req, res) => {
     })
 })
 
-server.get('/customer', (req,res)=>{
-    res.sendFile(__dirname+'/customer.html');
+server.get('/customer', (req, res) => {
+    res.sendFile(__dirname + '/customer.html');
 })
 
 
@@ -159,7 +159,7 @@ server.get('/admin/remove/:package_number', (req, res) => {
 })
 
 server.get('/admin/addpackage', (req, res) => {
-    res.sendFile(__dirname + '/admin/addPackage.html')
+    res.render('addPackage')
 })
 
 server.post('/add', (req, res) => {
@@ -312,9 +312,40 @@ server.get('/deleteU/:user_id', function (request, response, next) {
 });
 
 
-server.get('/payments', (req,res)=>{
-    
+server.get('/reports/payment', (req, res) => {
+    q = `select * from retail_center order by payment`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('payment', { data: d })
+        }
+    })
 })
+
+server.get('/pay/:id', (req, res) => {
+    var id = req.params.id;
+    var q = `update retail_center set payment = 'T' where Id = ${id}`
+
+    db.query(q, (e, d) => {
+        if (e) {
+            throw e;
+        }
+        else {
+            res.redirect('/reports/payment')
+        }
+    })
+})
+
+server.get('/reports/status', (req, res) => {
+    var q = `select * from transportation_method`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('status', { data: d })
+        }
+    })
+})
+
 
 server.use(express.static("public"));
 server.listen(() => {

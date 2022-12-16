@@ -16,10 +16,15 @@
             <input type="number" name="package_number" id="package_number"> <br>
 
             <label for="weight">weight:</label>
-            <input type="number" name="weight" id="weight"> <br>
+            <input type="text" name="weight" id="weight"> <br>
 
             <label for="destination">destination:</label>
-            <input type="text" name="destination" id="destination"><br>
+            <select name="destination" id="destination">
+                <option value="Khobar">Khobar</option>
+                <option value="Dahran">Dahran</option>
+                <option value="Hofuf">Hofuf</option>
+                <option value="Qatif">Qatif</option>
+            </select> <br>
 
             <label for="dimensions">dimensions:</label>
             <input type="text" name="dimensions" id="dimensions"><br>
@@ -37,7 +42,7 @@
 
             <label for="delivery_date">delivery_date:</label>
             <input type="text" name="delivery_date" id="delivery_date"> <br>
-            <button type="submit">Store</button>
+            <button type="submit">Insert</button>
         </form>
     </center>
 </body>

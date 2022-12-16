@@ -9,7 +9,7 @@
 
 <body>
   <div class="container mt-4">
-    <button onclick="location.href = '/admin/addpackage';" style="background-color: green; color: wheat;">Add</button>
+    <a href="/admin/addpackage" class="btn btn-success btn-sm float-end">Add</a>
     <table class="table">
       <thead>
         <tr>
@@ -47,8 +47,10 @@
             <td>
               <%= data[i].delivery_date%>
             </td>
-            <td><button style="background-color: blue; color: whitesmoke;" onclick="location.href = '/admin/edit/<%=data[i].package_number%>';">Edit</button> <button
-                style="background-color: red; color: whitesmoke;" onclick="location.href = '/admin/remove/<%=data[i].package_number%>';" >Delete</button> </td>
+            <td>
+              <a href="/admin/edit/<%=data[i].package_number%>" class="btn btn-primary btn-sm">Edit</a>
+              <a href="/admin/remove/<%=data[i].package_number%>" class="btn btn-danger btn-sm">Delete</a>
+            </td>
           </tr>
           <% } }else{ %>
             <tr>
