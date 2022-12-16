@@ -164,6 +164,7 @@ server.get('/admin/addpackage', (req, res) => {
 
 server.post('/add', (req, res) => {
     var pn = req.body.package_number;
+    var ss = pn
     var w = req.body.weight;
     var d = req.body.destination;
     var dimensions = req.body.dimensions;
@@ -178,8 +179,17 @@ server.post('/add', (req, res) => {
             throw e
         }
         else {
+            //
+        }
+    })
+    const s = ['in-transist','damaged','lost','delivered','Delayed'];
+    const random = Math.floor(Math.random() * s.length);
+    db.query(`update transportation_method set status = "${s[random]}" where id = ${ss}`,(e,d)=>{
+        if (e) {throw e;}
+        else{
             res.redirect('/admin/reports')
         }
+
     })
 
 

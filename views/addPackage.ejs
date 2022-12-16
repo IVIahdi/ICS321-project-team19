@@ -23,14 +23,14 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label>Package number</label>
-                            <input type="number" name="Package_number" id="Package_number" class="form-control" />
+                            <input type="number" name="package_number" id="package_number" class="form-control" />
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label>destination</label>
-                            <select name="destination" id="destination">
+                            <select name="destination" id="destination" class="form-select">
                                 <option value="Khobar">Khobar</option>
                                 <option value="Dahran">Dahran</option>
                                 <option value="Hofuf">Hofuf</option>
@@ -48,24 +48,38 @@
 
                     <div class="col-md-6">
                         <div class="mb-3">
+                            <label>dimensions</label>
+                            <input type="text" name="dimensions" id="dimensions" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
                             <label>category</label>
-                            <input type="text" name="category" id="category" class="form-control" />
+                            <select name="category" id="category" class="form-control">
+                                <option value="Regular">Regular</option>
+                                <option value="Fragile">Fragile</option>
+                                <option value="Liquid">Liquid</option>
+                                <option value="Chemical">Chemical</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label>Insurance amount</label>
+                            <input type="number" name="insurance_amount" id="insurance_amount" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label>Deliverydate</label>
+                            <input type="date" name="delivery_date" id="delivery_date" class="form-control" />
                         </div>
                     </div>
 
                 </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label>Insurance amount</label>
-                        <input type="number" name="insurance_amount" id="insurance_amount" class="form-control" />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label>Deliverydate</label>
-                        <input type="text" name="delivery_date" id="delivery_date" class="form-control" />
-                    </div>
-                </div>
+
         </div>
 
         <div class="mb-3">

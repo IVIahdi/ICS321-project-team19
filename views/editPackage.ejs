@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label>package number</label>
+                            <label>Package number</label>
                             <input type="number" name="package_number" id="package_number" class="form-control"
                                 value="<%= d.package_number %>" />
                         </div>
@@ -29,7 +29,7 @@
 
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label>weight</label>
+                            <label>Weight</label>
                             <input type="number" name="weight" id="weight" class="form-control"
                                 value="<%= d.weight %>" />
                         </div>
@@ -39,16 +39,20 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label>destination</label>
-                            <input type="text" name="destination" id="destination" class="form-control"
-                                value="<%= d.destination %>" />
+                            <label>Destination</label>
+                            <select name="destination" id="destination" class="form-select">
+                                <option value="Khobar">Khobar</option>
+                                <option value="Dahran">Dahran</option>
+                                <option value="Hofuf">Hofuf</option>
+                                <option value="Qatif">Qatif</option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label>category</label>
+                        <label>Category</label>
                         <select name="category" id="category" class="form-control">
                             <option value="Regular">Regular</option>
                             <option value="Fragile">Fragile</option>
@@ -61,7 +65,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label>dimensions</label>
+                            <label>Dimensions</label>
                             <input type="text" name="dimensions" id="dimensions" class="form-control"
                                 value="<%= d.dimensions %>" />
                         </div>
@@ -71,7 +75,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label>insurance_amount</label>
+                            <label>Insurance_amount</label>
                             <input type="number" name="insurance_amount" id="insurance_amount" class="form-control"
                                 value="<%= d.insurance_amount %>" />
                         </div>
@@ -82,7 +86,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label>delivery_date</label>
-                            <input type="text" name="delivery_date" id="delivery_date" class="form-control"
+                            <input type="date" name="delivery_date" id="delivery_date" class="form-control"
                                 value="<%= d.delivery_date %>" />
                         </div>
                     </div>
@@ -93,6 +97,7 @@
             </form>
             <script>
                 document.getElementById('category').value = "<%= d.category %>";
+                document.getElementById('destination').value = "<%= d.destination %>";
             </script>
         </div>
     </div>
