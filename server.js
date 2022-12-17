@@ -90,13 +90,13 @@ server.get('/reports/packsinfo', (req, res) => {
 })
 
 server.get('/reports/packsnumber', (req, res) => {
-    var q = 'select * from package;'
+    var q = 'select category, count(*) as c from package group by category;'
     db.query(q, (e, d) => {
         if (e) {
             throw e
         }
         else {
-            res.render('packages_number.ejs', { data: d })
+            res.render('packages_number', { data: d })
         }
     })
 })
@@ -354,6 +354,17 @@ server.get('/reports/status', (req, res) => {
             res.render('status', { data: d })
         }
     })
+})
+
+server.get('/reports/d_tracking', (req,res)=>{
+    var q = `select * from package`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('del_tracking', { data: d })
+        }
+    })
+
 })
 
 
