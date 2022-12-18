@@ -125,15 +125,16 @@ server.post('/edit/:package_number', (req, res) => {
     var c = req.body.category;
     var ia = req.body.insurance_amount;
     var dd = req.body.delivery_date;
+    var fu = req.body.from_user;
+    var tu = req.body.to_user;
 
     q = `update package
     set weight = ${w}, destination = "${d}",
     dimensions = "${dimensions}",
     category = "${c}",
     insurance_amount = ${ia},
-    delivery_date = "${dd}" where package_number = ${package_number}
-
-    `;
+    delivery_date = "${dd}", from_user = "${fu}",
+    to_user = "${tu}" where package_number = ${package_number}`;
 
     db.query(q, (error, data) => {
         if (error) { throw error; }
@@ -171,8 +172,10 @@ server.post('/add', (req, res) => {
     var c = req.body.category;
     var ia = req.body.insurance_amount;
     var dd = req.body.delivery_date;
+    var fu = req.body.from_user;
+    var tu = req.body.to_user;
 
-    var q = `insert into package values(${pn},"${d}",${w},"${dimensions}","${c}",${ia},"${dd}")`
+    var q = `insert into package values(${pn},"${d}",${w},"${dimensions}","${c}",${ia},"${dd}","${fu}","${tu}")`
 
     db.query(q, (e, d) => {
         if (e) {
@@ -184,7 +187,7 @@ server.post('/add', (req, res) => {
     })
     const s = ['in-transist', 'damaged', 'lost', 'Delayed', 'in-transist', 'in-transist', 'in-transist', 'in-transist', 'in-transist', 'in-transist'];
     const random = Math.floor(Math.random() * s.length);
-    db.query(`update transportation_method set status = "${s[random]}" where id = ${ss}`, (e, d) => {
+    db.query(`update transportation_method set status = "${s[0]}" where id = ${ss}`, (e, d) => {
         if (e) { throw e; }
         else {
             res.redirect('/admin/reports')
@@ -356,24 +359,14 @@ server.get('/reports/status', (req, res) => {
     })
 })
 
-server.get('/reports/d_tracking', (req, res) => {
-    var q = `select * from package`
-    db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
-            res.render('del_tracking', { data: d })
-        }
-    })
-
-})
 
 server.post('/reports/infoID', (req, res) => {
     var p = req.body.id;
     console.log(p);
     q = `select * from package join transportation_method on package.package_number = transportation_method.id where package_number = ${p}`
     db.query(q, (e, d) => {
-        if(e) { throw e; }
-        else{
+        if (e) { throw e; }
+        else {
             res.render('searchID', { data: d });
         }
     })
@@ -384,8 +377,8 @@ server.post('/reports/infocategory', (req, res) => {
     console.log(p);
     q = `select * from package join transportation_method on package.package_number = transportation_method.id where category = "${p}"`
     db.query(q, (e, d) => {
-        if(e) { throw e; }
-        else{
+        if (e) { throw e; }
+        else {
             res.render('searchID', { data: d });
         }
     })
@@ -397,8 +390,8 @@ server.post('/reports/infocity', (req, res) => {
     console.log(p);
     q = `select * from package join transportation_method on package.package_number = transportation_method.id where destination = "${p}"`
     db.query(q, (e, d) => {
-        if(e) { throw e; }
-        else{
+        if (e) { throw e; }
+        else {
             res.render('searchID', { data: d });
         }
     })
@@ -410,8 +403,8 @@ server.post('/reports/infodate', (req, res) => {
     console.log(p);
     q = `select * from package join transportation_method on package.package_number = transportation_method.id where delivery_date = "${p}"`
     db.query(q, (e, d) => {
-        if(e) { throw e; }
-        else{
+        if (e) { throw e; }
+        else {
             res.render('searchID', { data: d });
         }
     })
@@ -423,8 +416,8 @@ server.post('/reports/infostatus', (req, res) => {
     console.log(p);
     q = `select * from package join transportation_method on package.package_number = transportation_method.id where status = "${p}"`
     db.query(q, (e, d) => {
-        if(e) { throw e; }
-        else{
+        if (e) { throw e; }
+        else {
             res.render('searchID', { data: d });
         }
     })

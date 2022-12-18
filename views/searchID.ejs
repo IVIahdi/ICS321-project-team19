@@ -17,6 +17,8 @@
                     <th>category</th>
                     <th>delivery_date</th>
                     <th>status</th>
+                    <th>From</th>
+                    <th>To</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,6 +38,12 @@
                         </td>
                         <td>
                             <%= data[i].status%>
+                        </td>
+                        <td>
+                            <%= data[i].from_user%>
+                        </td>
+                        <td>
+                            <%= data[i].to_user%>
                         </td>
                         <td>
                             <a href="/admin/edit/<%=data[i].package_number%>" class="btn btn-primary btn-sm">Edit</a>
