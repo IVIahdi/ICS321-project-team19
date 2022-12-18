@@ -182,11 +182,11 @@ server.post('/add', (req, res) => {
             //
         }
     })
-    const s = ['in-transist','damaged','lost','delivered','Delayed'];
+    const s = ['in-transist', 'damaged', 'lost', 'Delayed', 'in-transist', 'in-transist', 'in-transist', 'in-transist', 'in-transist', 'in-transist'];
     const random = Math.floor(Math.random() * s.length);
-    db.query(`update transportation_method set status = "${s[random]}" where id = ${ss}`,(e,d)=>{
-        if (e) {throw e;}
-        else{
+    db.query(`update transportation_method set status = "${s[random]}" where id = ${ss}`, (e, d) => {
+        if (e) { throw e; }
+        else {
             res.redirect('/admin/reports')
         }
 
@@ -347,7 +347,7 @@ server.get('/pay/:id', (req, res) => {
 })
 
 server.get('/reports/status', (req, res) => {
-    var q = `select * from transportation_method`
+    var q = `select * from transportation_method order by id`
     db.query(q, (e, d) => {
         if (e) { throw e; }
         else {
@@ -356,7 +356,7 @@ server.get('/reports/status', (req, res) => {
     })
 })
 
-server.get('/reports/d_tracking', (req,res)=>{
+server.get('/reports/d_tracking', (req, res) => {
     var q = `select * from package`
     db.query(q, (e, d) => {
         if (e) { throw e; }
@@ -367,6 +367,69 @@ server.get('/reports/d_tracking', (req,res)=>{
 
 })
 
+server.post('/reports/infoID', (req, res) => {
+    var p = req.body.id;
+    console.log(p);
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id where package_number = ${p}`
+    db.query(q, (e, d) => {
+        if(e) { throw e; }
+        else{
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+server.post('/reports/infocategory', (req, res) => {
+    var p = req.body.category;
+    console.log(p);
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id where category = "${p}"`
+    db.query(q, (e, d) => {
+        if(e) { throw e; }
+        else{
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+
+server.post('/reports/infocity', (req, res) => {
+    var p = req.body.dimensions;
+    console.log(p);
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id where destination = "${p}"`
+    db.query(q, (e, d) => {
+        if(e) { throw e; }
+        else{
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+
+server.post('/reports/infodate', (req, res) => {
+    var p = req.body.date;
+    console.log(p);
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id where delivery_date = "${p}"`
+    db.query(q, (e, d) => {
+        if(e) { throw e; }
+        else{
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+
+server.post('/reports/infostatus', (req, res) => {
+    var p = req.body.status;
+    console.log(p);
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id where status = "${p}"`
+    db.query(q, (e, d) => {
+        if(e) { throw e; }
+        else{
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
 
 server.use(express.static("public"));
 server.listen(() => {
