@@ -15,12 +15,10 @@
             Welcome <%= user%> :)
         </h1>
         <div>
-                <button class="button-89" onclick="window.href= '/customer/<%=user%>/getmypacks';" role="button">get my packages</button>
+                <button onclick="location.href= '/customer/<%=user%>/getmypacks';">get my packages</button>
         </div>
         <div>
-            <button class="button-89" role="button">Send package</button>
-            <button class="button-89" role="button">Receive package</button>
-            <button class="button-89" role="button">Trace package</button>
+            <button class="button-89" role="button" onclick="location.href= '/customer/<%=user%>/rpacks';" >Receive package</button>
         </div>
         <div>
             <button class="button-89" role="button">Update profile</button>

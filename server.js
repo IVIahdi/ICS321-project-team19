@@ -9,6 +9,7 @@ const server = express();
 const port = 8000;
 server.set('view engine', 'ejs')
 server.use(express.urlencoded({ extended: false }));
+server.use(express.static("public"));
 server.use(session({
     secret: 'webslesson',
     resave: true,
@@ -92,7 +93,7 @@ server.get('/reports/packsinfo', (req, res) => {
 })
 
 server.get('/reports/packsnumber', (req, res) => {
-    var q = 'select category, count(*) as c from package group by category;'
+    var q = 'select category, count(*) as c from package group by category order by category;'
     db.query(q, (e, d) => {
         if (e) {
             throw e
@@ -102,41 +103,6 @@ server.get('/reports/packsnumber', (req, res) => {
         }
     })
 })
-
-
-
-
-
-
-
-
-server.get('/customer/:ID', (req, res) => {
-    var u = req.params.ID;
-    res.render('customer', {user: u})
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -180,9 +146,9 @@ server.post('/edit/:package_number', (req, res) => {
         }
     })
 
-    db.query(`update transportation_method set status = "${s}" where id = ${package_number}`,(e,d)=>{
-        if (e){throw e;}
-        else{
+    db.query(`update transportation_method set status = "${s}" where id = ${package_number}`, (e, d) => {
+        if (e) { throw e; }
+        else {
             res.redirect('/admin/reports');
         }
     })
@@ -244,7 +210,7 @@ server.post('/add', (req, res) => {
 })
 
 
-
+///////////////////admin change user
 
 server.get("/admin/users", function (request, response, next) {
 
@@ -368,7 +334,7 @@ server.get('/deleteU/:user_id', function (request, response, next) {
 
 });
 
-
+////////////////pay
 server.get('/reports/payment', (req, res) => {
     q = `select * from retail_center order by payment`
     db.query(q, (e, d) => {
@@ -392,6 +358,8 @@ server.get('/pay/:id', (req, res) => {
         }
     })
 })
+
+///////////////// admin reports
 
 server.get('/reports/status', (req, res) => {
     var q = `select * from transportation_method order by id desc`
@@ -459,7 +427,7 @@ server.post('/reports/infostatus', (req, res) => {
     var p = req.body.status;
     var d1 = req.body.d1;
     var d2 = req.body.d2;
-    console.log(d1,d2);
+    console.log(d1, d2);
     q = `select * from package join transportation_method on package.package_number = transportation_method.id
     where status = "${p}" and delivery_date between "${d1}" and "${d2}"`
     db.query(q, (e, d) => {
@@ -501,19 +469,71 @@ server.post('/reports/all', (req, res) => {
 
 })
 
-server.get('/customer/:ID/getmypacks', (req,res)=>{
+
+///////////////////////// Customer
+
+
+server.get('/customer/:ID', (req, res) => {
+    var u = req.params.ID;
+    res.render('customer', { user: u })
+})
+
+
+server.get('/customer/:ID/getmypacks', (req, res) => {
     var username = req.params.ID;
     console.log(username);
-    db.query(`select * from package where from_user = "${username}"`,(e,d)=>{
+    db.query(`select * from package where from_user = "${username}"`, (e, d) => {
         console.log(d);
-        if (e){throw e}
-        else{
-            res.render('packages_info.ejs', {data:d})
+        if (e) { throw e }
+        else {
+            res.render('packages_infoU', { data: d })
         }
     })
 })
 
-server.use(express.static("public"));
+server.get('/customer/:ID/addpackage', (req, res) => {
+    res.render('addpackageU')
+})
+
+server.post('/addpu', (req, res) => {
+    var d = req.body.destination;
+    var w = req.body.weight;
+    var dd = req.body.dimensions;
+    var c = req.body.category;
+    var f = req.body.from_user;
+    var t = req.body.to_user;
+    const date = new Date();
+
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    // This arrangement can be altered based on how we want the date's format to appear.
+    let currentDate = `${year}-${month}-${day}`;
+
+    db.query(`Insert into package(destination,weight,dimensions,category,insurance_amount,delivery_date,from_user,to_user) 
+    values("${d}",${w},"${dd}","${c}",${w},"${currentDate}","${f}","${t}")`, (e,d)=>{
+        if (e){throw e;}
+        else{
+            res.redirect('/')
+        }
+    })
+
+
+
+})
+
+server.get('/customer/:ID/rpacks',(req,res)=>{
+    var username = req.params.ID;
+    db.query(`select * from package where to_user = "${username}"`, (e, d) => {
+        if (e) { throw e }
+        else {
+            res.render('rpacks', { data: d })
+        }
+    })
+})
+
+
 server.listen(() => {
     server.listen(port, () => {
         console.log(`http://localhost:${port}`);
