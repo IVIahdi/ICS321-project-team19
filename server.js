@@ -72,12 +72,11 @@ server.get('/logout', function (request, response, next) {
 
 
 server.get('/admin', (req, res) => {
-    // res.sendFile(__dirname + '/admin.html')
     res.render('admin')
 })
 
 server.get('/admin/reports', (req, res) => {
-    res.sendFile(__dirname + '/reports.html')
+    res.render('reports')
 });
 
 server.get('/reports/packsinfo', (req, res) => {
