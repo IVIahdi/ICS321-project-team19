@@ -10,6 +10,7 @@ const port = 8000;
 server.set('view engine', 'ejs')
 server.use(express.urlencoded({ extended: false }));
 server.use(express.static("public"));
+server.use("/public", express.static(__dirname + "/views/public"));
 server.use(session({
     secret: 'webslesson',
     resave: true,
@@ -71,8 +72,9 @@ server.get('/logout', function (request, response, next) {
 });
 
 
-server.get('/admin', (req, res) => {
-    res.render('admin')
+server.get('/admin', (req, res,next) => {
+    res.render('admin');
+    next;
 })
 
 server.get('/admin/reports', (req, res) => {
