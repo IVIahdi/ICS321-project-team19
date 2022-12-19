@@ -9,7 +9,6 @@
 
 <body>
   <div>
-    <center>
     <form action="infoID" method="post">
       ID:
       <input class="form-control" id="id" name="id" type="number"> <br>
@@ -46,6 +45,8 @@
     </form> <br>
     Status:
     <form action="infostatus" method="post">
+      date1: <input type="date" id="d1" name="d1">
+      date2: <input type="date" id="d2" name="d2"> <br>
       <select name="status" id="status" class="form-select">
         <option value="lost">lost</option>
         <option value="delayed">Delayed</option>
@@ -53,9 +54,50 @@
         <option value="in-transist">in-transist</option>
       </select> <br>
       <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/infostatus'" class="button-54">Search
-        by city</button>
+        by status</button>
     </form> <br>
-  </center>
+    <form action="numberofpacks" method="post">
+      date1: <input type="date" id="d11" name="d11">
+      date2: <input type="date" id="d22" name="d22"> <br>
+      Category:
+      <select name="category" id="category" class="form-control">
+        <option value="Regular">Regular</option>
+        <option value="Fragile">Fragile</option>
+        <option value="Liquid">Liquid</option>
+        <option value="Chemical">Chemical</option>
+      </select> <br>
+      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/numberofpacks'" class="button-54">Search
+        by category</button>
+    </form> <br>
+    <form action="all" method="post">
+      <h3>
+        Advanced search:
+      </h3>
+      Category:
+      <select name="t1" id="t1" class="form-control">
+        <option value="Regular">Regular</option>
+        <option value="Fragile">Fragile</option>
+        <option value="Liquid">Liquid</option>
+        <option value="Chemical">Chemical</option>
+      </select>
+      Destination:
+      <select name="t2" id="t2" class="form-select">
+        <option value="Khobar">Khobar</option>
+        <option value="Dahran">Dahran</option>
+        <option value="Hofuf">Hofuf</option>
+        <option value="Qatif">Qatif</option>
+      </select>
+      Status:
+      <select name="t3" id="t3" class="form-select">
+        <option value="lost">lost</option>
+        <option value="delayed">Delayed</option>
+        <option value="damaged">Damaged</option>
+        <option value="in-transist">in-transist</option>
+      </select> <br>
+      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/all'" class="button-54">Search
+        </button>
+    </form> <br>
+    
   </div>
   <div class="container mt-4">
     <a href="/admin/addpackage" class="btn btn-success btn-sm float-end">Add</a>

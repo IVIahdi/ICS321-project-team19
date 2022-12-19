@@ -39,6 +39,7 @@ server.post('/login', function (request, response, next) {
                     if (data[count].user_password == password) {
                         request.session.user_id = data[count].user_id;
                         request.session.role = data[count].role;
+                        request.session.username = data[count].username;
 
                         response.redirect("/");
                     }
@@ -70,7 +71,8 @@ server.get('/logout', function (request, response, next) {
 
 
 server.get('/admin', (req, res) => {
-    res.sendFile(__dirname + '/admin.html')
+    // res.sendFile(__dirname + '/admin.html')
+    res.render('admin')
 })
 
 server.get('/admin/reports', (req, res) => {
@@ -101,14 +103,49 @@ server.get('/reports/packsnumber', (req, res) => {
     })
 })
 
-server.get('/customer', (req, res) => {
-    res.sendFile(__dirname + '/customer.html');
+
+
+
+
+
+
+
+server.get('/customer/:ID', (req, res) => {
+    // res.sendFile(__dirname + '/customer.html');
+    var u = req.params.ID;
+
+    res.render('customer', {user: u})
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 server.get('/admin/edit/:package_number', (req, res) => {
     var package_number = req.params.package_number
-    var q = `select * from package where package_number = ${package_number}`
+    var q = `select * from package,transportation_method where package_number = ${package_number}`
 
     db.query(q, (e, d) => {
         if (e) throw e;
@@ -128,6 +165,8 @@ server.post('/edit/:package_number', (req, res) => {
     var fu = req.body.from_user;
     var tu = req.body.to_user;
 
+    var s = req.body.status;
+
     q = `update package
     set weight = ${w}, destination = "${d}",
     dimensions = "${dimensions}",
@@ -139,7 +178,14 @@ server.post('/edit/:package_number', (req, res) => {
     db.query(q, (error, data) => {
         if (error) { throw error; }
         else {
-            res.redirect('/admin/reports')
+            //
+        }
+    })
+
+    db.query(`update transportation_method set status = "${s}" where id = ${package_number}`,(e,d)=>{
+        if (e){throw e;}
+        else{
+            res.redirect('/admin/reports');
         }
     })
 
@@ -350,7 +396,7 @@ server.get('/pay/:id', (req, res) => {
 })
 
 server.get('/reports/status', (req, res) => {
-    var q = `select * from transportation_method order by id`
+    var q = `select * from transportation_method order by id desc`
     db.query(q, (e, d) => {
         if (e) { throw e; }
         else {
@@ -413,8 +459,41 @@ server.post('/reports/infodate', (req, res) => {
 
 server.post('/reports/infostatus', (req, res) => {
     var p = req.body.status;
-    console.log(p);
-    q = `select * from package join transportation_method on package.package_number = transportation_method.id where status = "${p}"`
+    var d1 = req.body.d1;
+    var d2 = req.body.d2;
+    console.log(d1,d2);
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id
+    where status = "${p}" and delivery_date between "${d1}" and "${d2}"`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('searchID', { data: d });
+        }
+    })
+})
+
+server.post('/reports/numberofpacks', (req, res) => {
+    var d1 = req.body.d11;
+    var d2 = req.body.d22;
+    var c = req.body.category;
+    q = `select * from package
+    where delivery_date between "${d1}" and "${d2}" and category = "${c}"`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+
+server.post('/reports/all', (req, res) => {
+    var t1 = req.body.t1; //cati
+    var t2 = req.body.t2; // location
+    var t3 = req.body.t3; //status
+
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id
+    where category = "${t1}" and destination = "${t2}" and status = "${t3}"`
     db.query(q, (e, d) => {
         if (e) { throw e; }
         else {

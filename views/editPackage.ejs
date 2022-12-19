@@ -93,6 +93,18 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
+                            <label>Status</label>
+                            <select name="status" id="status" class="form-control">
+                                <option value="In-transist">In_transist</option>
+                                <option value="Delayed">Delayed</option>
+                                <option value="lost">Lost</option>
+                                <option value="Damaged">Damaged</option>
+                                <option value="Delivered">delivered</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
                             <label>From user</label>
                             <input type="text" name="from_user" id="from_user" class="form-control"
                                 value="<%= d.from_user%>" />
@@ -109,12 +121,15 @@
                     <div class="mb-3">
                         <input type="submit" name="submit_button" class="btn btn-primary" value="Edit" />
                     </div>
+                </div>
             </form>
             <script>
                 document.getElementById('category').value = "<%= d.category %>";
                 document.getElementById('destination').value = "<%= d.destination %>";
                 var date = new Date($('#delivery_date').val());
                 document.getElementById('delivery_date').value = date.getDate();
+                console.log(date);
+                document.getElementById('status').value = "<%= d.status%>";
             </script>
         </div>
     </div>
