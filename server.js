@@ -111,9 +111,7 @@ server.get('/reports/packsnumber', (req, res) => {
 
 
 server.get('/customer/:ID', (req, res) => {
-    // res.sendFile(__dirname + '/customer.html');
     var u = req.params.ID;
-
     res.render('customer', {user: u})
 })
 
@@ -501,6 +499,18 @@ server.post('/reports/all', (req, res) => {
         }
     })
 
+})
+
+server.get('/customer/:ID/getmypacks', (req,res)=>{
+    var username = req.params.ID;
+    console.log(username);
+    db.query(`select * from package where from_user = "${username}"`,(e,d)=>{
+        console.log(d);
+        if (e){throw e}
+        else{
+            res.render('packages_info.ejs', {data:d})
+        }
+    })
 })
 
 server.use(express.static("public"));
