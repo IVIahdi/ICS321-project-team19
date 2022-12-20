@@ -72,7 +72,7 @@ server.get('/logout', function (request, response, next) {
 });
 
 
-server.get('/admin', (req, res,next) => {
+server.get('/admin', (req, res, next) => {
     res.render('admin');
     next;
 })
@@ -513,9 +513,9 @@ server.post('/addpu', (req, res) => {
     let currentDate = `${year}-${month}-${day}`;
 
     db.query(`Insert into package(destination,weight,dimensions,category,insurance_amount,delivery_date,from_user,to_user) 
-    values("${d}",${w},"${dd}","${c}",${w},"${currentDate}","${f}","${t}")`, (e,d)=>{
-        if (e){throw e;}
-        else{
+    values("${d}",${w},"${dd}","${c}",${w},"${currentDate}","${f}","${t}")`, (e, d) => {
+        if (e) { throw e; }
+        else {
             res.redirect('/')
         }
     })
@@ -524,7 +524,7 @@ server.post('/addpu', (req, res) => {
 
 })
 
-server.get('/customer/:ID/rpacks',(req,res)=>{
+server.get('/customer/:ID/rpacks', (req, res) => {
     var username = req.params.ID;
     db.query(`select * from package where to_user = "${username}"`, (e, d) => {
         if (e) { throw e }
@@ -534,6 +534,24 @@ server.get('/customer/:ID/rpacks',(req,res)=>{
     })
 })
 
+server.get('/customer/:ID/update', (req, res) => {
+    var u = req.params.ID
+    console.log(u);
+
+    q = `select * from user_login where username = "${u}" `
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('updateU', { data: d[0] })
+            console.log(d);
+        }
+    })
+
+})
+
+server.post('/customer/:ID/update', (req, res) => {
+
+})
 
 server.listen(() => {
     server.listen(port, () => {
