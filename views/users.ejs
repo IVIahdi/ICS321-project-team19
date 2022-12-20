@@ -168,7 +168,8 @@
                                     <td>
                                         <a href="/editU/<%= data.user_id %>" class="btn btn-primary btn-sm">Edit</a>
                                         <a href="/deleteU/<%= data.user_id %>" class="btn btn-danger btn-sm">Delete</a>
-                                        <a href="/emailU/<%= data.user_id %>" class="btn btn-warning btn-sm">email</a>
+                                        <a onclick="window.location.href = `mailto:<%=data.user_email%>>?subject=Subject&body=message%20goes%20here`" class="btn btn-warning btn-sm">email</a>
+                                        
                                     </td>
                                 </tr>
                                 <% }); } else { %>

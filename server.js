@@ -337,7 +337,7 @@ server.get('/deleteU/:user_id', function (request, response, next) {
 
 ////////////////pay
 server.get('/reports/payment', (req, res) => {
-    q = `select * from retail_center order by payment`
+    q = `select * from retail_center order by Id`
     db.query(q, (e, d) => {
         if (e) { throw e; }
         else {
@@ -348,6 +348,7 @@ server.get('/reports/payment', (req, res) => {
 
 server.get('/pay/:id', (req, res) => {
     var id = req.params.id;
+    
     var q = `update retail_center set payment = 'T' where Id = ${id}`
 
     db.query(q, (e, d) => {
@@ -355,7 +356,7 @@ server.get('/pay/:id', (req, res) => {
             throw e;
         }
         else {
-            res.redirect('/reports/payment')
+            res.redirect('/')
         }
     })
 })
@@ -387,8 +388,10 @@ server.post('/reports/infoID', (req, res) => {
 })
 server.post('/reports/infocategory', (req, res) => {
     var p = req.body.category;
-    console.log(p);
-    q = `select * from package join transportation_method on package.package_number = transportation_method.id where category = "${p}"`
+    var d1 = req.body.d11;
+    var d2 = req.body.d22;
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id 
+    where category = "${p}" and delivery_date between "${d1}" and "${d2}"`
     db.query(q, (e, d) => {
         if (e) { throw e; }
         else {
@@ -526,7 +529,8 @@ server.post('/addpu', (req, res) => {
 
 server.get('/customer/:ID/rpacks', (req, res) => {
     var username = req.params.ID;
-    db.query(`select * from package where to_user = "${username}"`, (e, d) => {
+    db.query(`select * from package join retail_center on package.package_number = retail_center.Id
+     join transportation_method on package.package_number = transportation_method.id where package.to_user = "${username}"`, (e, d) => {
         if (e) { throw e }
         else {
             res.render('rpacks', { data: d })
@@ -543,13 +547,22 @@ server.get('/customer/:ID/update', (req, res) => {
         if (e) { throw e; }
         else {
             res.render('updateU', { data: d[0] })
-            console.log(d);
         }
     })
 
 })
 
 server.post('/customer/:ID/update', (req, res) => {
+    var username = req.body.username;
+    var email = req.body.user_email;
+    var password = req.body.user_password;
+    q = `update user_login set username = "${username}", user_password = "${password}", user_email = "${email}" where username = "${username}"`
+    db.query(q,(e,d)=>{
+        if (e){throw e}
+        else{
+            res.redirect('/')
+        }
+    })
 
 })
 

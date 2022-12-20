@@ -15,17 +15,6 @@
       <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/infoID'" class="button-54">Search by
         ID</button>
     </form> <br>
-    <form action="infocategory" method="post">
-      Category:
-      <select name="category" id="category" class="form-control">
-        <option value="Regular">Regular</option>
-        <option value="Fragile">Fragile</option>
-        <option value="Liquid">Liquid</option>
-        <option value="Chemical">Chemical</option>
-      </select> <br>
-      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/infocategory'"
-        class="button-54">Search by category</button>
-    </form> <br>
     City:
     <form action="infocity" method="post">
       <select name="dimensions" id="dimensions" class="form-select">
@@ -52,6 +41,7 @@
         <option value="delayed">Delayed</option>
         <option value="damaged">Damaged</option>
         <option value="in-transist">in-transist</option>
+        <option value="Delivered">Delivered</option>
       </select> <br>
       <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/infostatus'" class="button-54">Search
         by status</button>
@@ -66,7 +56,7 @@
         <option value="Liquid">Liquid</option>
         <option value="Chemical">Chemical</option>
       </select> <br>
-      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/numberofpacks'" class="button-54">Search
+      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/infocategory'" class="button-54">Search
         by category</button>
     </form> <br>
     <form action="all" method="post">
@@ -93,6 +83,8 @@
         <option value="delayed">Delayed</option>
         <option value="damaged">Damaged</option>
         <option value="in-transist">in-transist</option>
+        <option value="Delivered">Delivered</option>
+
       </select> <br>
       <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/all'" class="button-54">Search
         </button>

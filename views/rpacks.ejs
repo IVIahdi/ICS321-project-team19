@@ -14,7 +14,8 @@
         <tr>
           <th>package number</th>
           <th>from</th>
-          <th>To</th>
+          <th>status</th>
+          <th>Paid?</th>
         </tr>
       </thead>
       <tbody>
@@ -27,8 +28,13 @@
               <%= data[i].from_user%>
             </td>
             <td>
-                <%= data[i].to_user%>
-              </td>
+              <%= data[i].status%>
+            </td>
+            <td>
+              <a href="/pay/<%= data[i].Id%>" class="btn btn-info btn-sm">
+                <%=data[i].payment%>
+              </a>
+            </td>
           </tr>
           <% } }else{ %>
             <tr>
