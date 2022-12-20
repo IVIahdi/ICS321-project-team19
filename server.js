@@ -259,7 +259,7 @@ server.post("/addU", function (request, response, next) {
             throw error;
         }
         else {
-            response.redirect("/admin");
+            response.redirect("/");
         }
 
     });
@@ -307,7 +307,7 @@ server.post('/editU/:user_id', function (request, response, next) {
             throw error;
         }
         else {
-            response.redirect("/admin");
+            response.redirect("/");
         }
 
     });
@@ -328,7 +328,7 @@ server.get('/deleteU/:user_id', function (request, response, next) {
             throw error;
         }
         else {
-            response.redirect("/admin");
+            response.redirect("/");
         }
 
     });

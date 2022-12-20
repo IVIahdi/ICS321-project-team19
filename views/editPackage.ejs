@@ -87,8 +87,7 @@
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label>delivery_date</label>
-                            <input type="date" name="delivery_date" id="delivery_date" class="form-control"
-                                value="<%= d.delivery_date %>" />
+                            <input type="date" name="delivery_date" id="delivery_date" class="form-control" />
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -130,6 +129,8 @@
                 document.getElementById('delivery_date').value = date.getDate();
                 console.log(date);
                 document.getElementById('status').value = "<%= d.status%>";
+                var dt = new Date();
+                document.getElementById("delivery_date").innerHTML = dt.toLocaleString();
             </script>
         </div>
     </div>
