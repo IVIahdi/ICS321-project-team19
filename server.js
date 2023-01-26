@@ -9,6 +9,8 @@ const server = express();
 const port = 8000;
 server.set('view engine', 'ejs')
 server.use(express.urlencoded({ extended: false }));
+server.use(express.static("public"));
+server.use("/public", express.static(__dirname + "/views/public"));
 server.use(session({
     secret: 'webslesson',
     resave: true,
@@ -39,6 +41,7 @@ server.post('/login', function (request, response, next) {
                     if (data[count].user_password == password) {
                         request.session.user_id = data[count].user_id;
                         request.session.role = data[count].role;
+                        request.session.username = data[count].username;
 
                         response.redirect("/");
                     }
@@ -69,12 +72,13 @@ server.get('/logout', function (request, response, next) {
 });
 
 
-server.get('/admin', (req, res) => {
-    res.sendFile(__dirname + '/admin.html')
+server.get('/admin', (req, res, next) => {
+    res.render('admin');
+    next;
 })
 
 server.get('/admin/reports', (req, res) => {
-    res.sendFile(__dirname + '/reports.html')
+    res.render('reports')
 });
 
 server.get('/reports/packsinfo', (req, res) => {
@@ -90,25 +94,23 @@ server.get('/reports/packsinfo', (req, res) => {
 })
 
 server.get('/reports/packsnumber', (req, res) => {
-    var q = 'select * from package;'
+    var q = 'select category, count(*) as c from package group by category order by category;'
     db.query(q, (e, d) => {
         if (e) {
             throw e
         }
         else {
-            res.render('packages_number.ejs', { data: d })
+            res.render('packages_number', { data: d })
         }
     })
 })
 
-server.get('/customer', (req,res)=>{
-    res.sendFile(__dirname+'/customer.html');
-})
+
 
 
 server.get('/admin/edit/:package_number', (req, res) => {
     var package_number = req.params.package_number
-    var q = `select * from package where package_number = ${package_number}`
+    var q = `select * from package,transportation_method where package_number = ${package_number}`
 
     db.query(q, (e, d) => {
         if (e) throw e;
@@ -125,20 +127,30 @@ server.post('/edit/:package_number', (req, res) => {
     var c = req.body.category;
     var ia = req.body.insurance_amount;
     var dd = req.body.delivery_date;
+    var fu = req.body.from_user;
+    var tu = req.body.to_user;
+
+    var s = req.body.status;
 
     q = `update package
     set weight = ${w}, destination = "${d}",
     dimensions = "${dimensions}",
     category = "${c}",
     insurance_amount = ${ia},
-    delivery_date = "${dd}" where package_number = ${package_number}
-
-    `;
+    delivery_date = "${dd}", from_user = "${fu}",
+    to_user = "${tu}" where package_number = ${package_number}`;
 
     db.query(q, (error, data) => {
         if (error) { throw error; }
         else {
-            res.redirect('/admin/reports')
+            //
+        }
+    })
+
+    db.query(`update transportation_method set status = "${s}" where id = ${package_number}`, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.redirect('/admin/reports');
         }
     })
 
@@ -159,27 +171,39 @@ server.get('/admin/remove/:package_number', (req, res) => {
 })
 
 server.get('/admin/addpackage', (req, res) => {
-    res.sendFile(__dirname + '/admin/addPackage.html')
+    res.render('addPackage')
 })
 
 server.post('/add', (req, res) => {
     var pn = req.body.package_number;
+    var ss = pn
     var w = req.body.weight;
     var d = req.body.destination;
     var dimensions = req.body.dimensions;
     var c = req.body.category;
     var ia = req.body.insurance_amount;
     var dd = req.body.delivery_date;
+    var fu = req.body.from_user;
+    var tu = req.body.to_user;
 
-    var q = `insert into package values(${pn},${w},"${d}","${dimensions}",${ia},"${dd}","${c}")`
+    var q = `insert into package values(${pn},"${d}",${w},"${dimensions}","${c}",${ia},"${dd}","${fu}","${tu}")`
 
     db.query(q, (e, d) => {
         if (e) {
             throw e
         }
         else {
+            //
+        }
+    })
+    const s = ['in-transist', 'damaged', 'lost', 'Delayed', 'in-transist', 'in-transist', 'in-transist', 'in-transist', 'in-transist', 'in-transist'];
+    const random = Math.floor(Math.random() * s.length);
+    db.query(`update transportation_method set status = "${s[0]}" where id = ${ss}`, (e, d) => {
+        if (e) { throw e; }
+        else {
             res.redirect('/admin/reports')
         }
+
     })
 
 
@@ -187,7 +211,7 @@ server.post('/add', (req, res) => {
 })
 
 
-
+///////////////////admin change user
 
 server.get("/admin/users", function (request, response, next) {
 
@@ -235,7 +259,7 @@ server.post("/addU", function (request, response, next) {
             throw error;
         }
         else {
-            response.redirect("/admin");
+            response.redirect("/");
         }
 
     });
@@ -283,7 +307,7 @@ server.post('/editU/:user_id', function (request, response, next) {
             throw error;
         }
         else {
-            response.redirect("/admin");
+            response.redirect("/");
         }
 
     });
@@ -304,17 +328,244 @@ server.get('/deleteU/:user_id', function (request, response, next) {
             throw error;
         }
         else {
-            response.redirect("/admin");
+            response.redirect("/");
         }
 
     });
 
 });
 
+////////////////pay
+server.get('/reports/payment', (req, res) => {
+    q = `select * from retail_center order by Id`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('payment', { data: d })
+        }
+    })
+})
+
+server.get('/pay/:id', (req, res) => {
+    var id = req.params.id;
+    
+    var q = `update retail_center set payment = 'T' where Id = ${id}`
+
+    db.query(q, (e, d) => {
+        if (e) {
+            throw e;
+        }
+        else {
+            res.redirect('/')
+        }
+    })
+})
+
+///////////////// admin reports
+
+server.get('/reports/status', (req, res) => {
+    var q = `select * from transportation_method order by id desc`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('status', { data: d })
+        }
+    })
+})
+
+
+server.post('/reports/infoID', (req, res) => {
+    var p = req.body.id;
+    console.log(p);
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id where package_number = ${p}`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+server.post('/reports/infocategory', (req, res) => {
+    var p = req.body.category;
+    var d1 = req.body.d11;
+    var d2 = req.body.d22;
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id 
+    where category = "${p}" and delivery_date between "${d1}" and "${d2}"`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+
+server.post('/reports/infocity', (req, res) => {
+    var p = req.body.dimensions;
+    console.log(p);
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id where destination = "${p}"`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+
+server.post('/reports/infodate', (req, res) => {
+    var p = req.body.date;
+    console.log(p);
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id where delivery_date = "${p}"`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+
+server.post('/reports/infostatus', (req, res) => {
+    var p = req.body.status;
+    var d1 = req.body.d1;
+    var d2 = req.body.d2;
+    console.log(d1, d2);
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id
+    where status = "${p}" and delivery_date between "${d1}" and "${d2}"`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('searchID', { data: d });
+        }
+    })
+})
+
+server.post('/reports/numberofpacks', (req, res) => {
+    var d1 = req.body.d11;
+    var d2 = req.body.d22;
+    var c = req.body.category;
+    q = `select * from package
+    where delivery_date between "${d1}" and "${d2}" and category = "${c}"`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+
+server.post('/reports/all', (req, res) => {
+    var t1 = req.body.t1; //cati
+    var t2 = req.body.t2; // location
+    var t3 = req.body.t3; //status
+
+    q = `select * from package join transportation_method on package.package_number = transportation_method.id
+    where category = "${t1}" and destination = "${t2}" and status = "${t3}"`
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('searchID', { data: d });
+        }
+    })
+
+})
+
+
+///////////////////////// Customer
+
+
+server.get('/customer/:ID', (req, res) => {
+    var u = req.params.ID;
+    res.render('customer', { user: u })
+})
+
+
+server.get('/customer/:ID/getmypacks', (req, res) => {
+    var username = req.params.ID;
+    console.log(username);
+    db.query(`select * from package where from_user = "${username}"`, (e, d) => {
+        console.log(d);
+        if (e) { throw e }
+        else {
+            res.render('packages_infoU', { data: d })
+        }
+    })
+})
+
+server.get('/customer/:ID/addpackage', (req, res) => {
+    res.render('addpackageU')
+})
+
+server.post('/addpu', (req, res) => {
+    var d = req.body.destination;
+    var w = req.body.weight;
+    var dd = req.body.dimensions;
+    var c = req.body.category;
+    var f = req.body.from_user;
+    var t = req.body.to_user;
+    const date = new Date();
+
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    // This arrangement can be altered based on how we want the date's format to appear.
+    let currentDate = `${year}-${month}-${day}`;
+
+    db.query(`Insert into package(destination,weight,dimensions,category,insurance_amount,delivery_date,from_user,to_user) 
+    values("${d}",${w},"${dd}","${c}",${w},"${currentDate}","${f}","${t}")`, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.redirect('/')
+        }
+    })
 
 
 
-server.use(express.static("public"));
+})
+
+server.get('/customer/:ID/rpacks', (req, res) => {
+    var username = req.params.ID;
+    db.query(`select * from package join retail_center on package.package_number = retail_center.Id
+     join transportation_method on package.package_number = transportation_method.id where package.to_user = "${username}"`, (e, d) => {
+        if (e) { throw e }
+        else {
+            res.render('rpacks', { data: d })
+        }
+    })
+})
+
+server.get('/customer/:ID/update', (req, res) => {
+    var u = req.params.ID
+    console.log(u);
+
+    q = `select * from user_login where username = "${u}" `
+    db.query(q, (e, d) => {
+        if (e) { throw e; }
+        else {
+            res.render('updateU', { data: d[0] })
+        }
+    })
+
+})
+
+server.post('/customer/:ID/update', (req, res) => {
+    var username = req.body.username;
+    var email = req.body.user_email;
+    var password = req.body.user_password;
+    q = `update user_login set username = "${username}", user_password = "${password}", user_email = "${email}" where username = "${username}"`
+    db.query(q,(e,d)=>{
+        if (e){throw e}
+        else{
+            res.redirect('/')
+        }
+    })
+
+})
+
 server.listen(() => {
     server.listen(port, () => {
         console.log(`http://localhost:${port}`);

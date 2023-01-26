@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+  <div class="container mt-4">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>package number</th>
+          <th>paid?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if(data.length){ for(var i=0; i< data.length; i++) {%>
+          <tr>
+            <td>
+              <%= data[i].Id%>
+            </td>
+            <td>
+              <a href="/pay/<%= data[i].Id%>" class="btn btn-info btn-sm">
+                <%=data[i].payment%>
+              </a>
+            </td>
+          </tr>
+          <% } }else{ %>
+            <tr>
+              <td>No data ever existed.</td>
+            </tr>
+            <% } %>
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>

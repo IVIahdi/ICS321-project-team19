@@ -8,8 +8,91 @@
 </head>
 
 <body>
+  <div>
+    <form action="infoID" method="post">
+      ID:
+      <input class="form-control" id="id" name="id" type="number"> <br>
+      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/infoID'" class="button-54">Search by
+        ID</button>
+    </form> <br>
+    City:
+    <form action="infocity" method="post">
+      <select name="dimensions" id="dimensions" class="form-select">
+        <option value="Khobar">Khobar</option>
+        <option value="Dahran">Dahran</option>
+        <option value="Hofuf">Hofuf</option>
+        <option value="Qatif">Qatif</option>
+      </select> <br>
+      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/infocity'" class="button-54">Search by
+        city</button>
+    </form> <br>
+    Date:
+    <form action="infodate" method="post">
+      <input class="form-control" id="date" name="date" type="date"> <br>
+      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/infodate'" class="button-54">Search by
+        date</button>
+    </form> <br>
+    Status:
+    <form action="infostatus" method="post">
+      date1: <input type="date" id="d1" name="d1">
+      date2: <input type="date" id="d2" name="d2"> <br>
+      <select name="status" id="status" class="form-select">
+        <option value="lost">lost</option>
+        <option value="delayed">Delayed</option>
+        <option value="damaged">Damaged</option>
+        <option value="in-transist">in-transist</option>
+        <option value="Delivered">Delivered</option>
+      </select> <br>
+      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/infostatus'" class="button-54">Search
+        by status</button>
+    </form> <br>
+    <form action="numberofpacks" method="post">
+      date1: <input type="date" id="d11" name="d11">
+      date2: <input type="date" id="d22" name="d22"> <br>
+      Category:
+      <select name="category" id="category" class="form-control">
+        <option value="Regular">Regular</option>
+        <option value="Fragile">Fragile</option>
+        <option value="Liquid">Liquid</option>
+        <option value="Chemical">Chemical</option>
+      </select> <br>
+      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/infocategory'" class="button-54">Search
+        by category</button>
+    </form> <br>
+    <form action="all" method="post">
+      <h3>
+        Advanced search:
+      </h3>
+      Category:
+      <select name="t1" id="t1" class="form-control">
+        <option value="Regular">Regular</option>
+        <option value="Fragile">Fragile</option>
+        <option value="Liquid">Liquid</option>
+        <option value="Chemical">Chemical</option>
+      </select>
+      Destination:
+      <select name="t2" id="t2" class="form-select">
+        <option value="Khobar">Khobar</option>
+        <option value="Dahran">Dahran</option>
+        <option value="Hofuf">Hofuf</option>
+        <option value="Qatif">Qatif</option>
+      </select>
+      Status:
+      <select name="t3" id="t3" class="form-select">
+        <option value="lost">lost</option>
+        <option value="delayed">Delayed</option>
+        <option value="damaged">Damaged</option>
+        <option value="in-transist">in-transist</option>
+        <option value="Delivered">Delivered</option>
+
+      </select> <br>
+      <button class="btn btn-secondary btn-sm" onclick="location.href = '/reports/all'" class="button-54">Search
+        </button>
+    </form> <br>
+    
+  </div>
   <div class="container mt-4">
-    <button onclick="location.href = '/admin/addpackage';" style="background-color: green; color: wheat;">Add</button>
+    <a href="/admin/addpackage" class="btn btn-success btn-sm float-end">Add</a>
     <table class="table">
       <thead>
         <tr>
@@ -47,8 +130,10 @@
             <td>
               <%= data[i].delivery_date%>
             </td>
-            <td><button style="background-color: blue; color: whitesmoke;" onclick="location.href = '/admin/edit/<%=data[i].package_number%>';">Edit</button> <button
-                style="background-color: red; color: whitesmoke;" onclick="location.href = '/admin/remove/<%=data[i].package_number%>';" >Delete</button> </td>
+            <td>
+              <a href="/admin/edit/<%=data[i].package_number%>" class="btn btn-primary btn-sm">Edit</a>
+              <a href="/admin/remove/<%=data[i].package_number%>" class="btn btn-danger btn-sm">Delete</a>
+            </td>
           </tr>
           <% } }else{ %>
             <tr>
@@ -57,6 +142,7 @@
             <% } %>
       </tbody>
     </table>
+
   </div>
 </body>
 
