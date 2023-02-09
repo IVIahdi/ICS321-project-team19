@@ -3,8 +3,6 @@ const db = require(__dirname + '/db');
 
 var session = require('express-session');
 
-
-
 const server = express();
 const port = 8000;
 server.set('view engine', 'ejs')
@@ -22,7 +20,7 @@ server.get('/', (req, res) => {
 })
 
 
-server.post('/login', function (request, response, next) {
+server.post('/login', function(request, response, next) {
 
     var username = request.body.username;
 
@@ -34,7 +32,7 @@ server.post('/login', function (request, response, next) {
         WHERE username = "${username}"
         `;
 
-        db.query(query, function (error, data) {
+        db.query(query, function(error, data) {
 
             if (data.length > 0) {
                 for (var count = 0; count < data.length; count++) {
@@ -44,26 +42,23 @@ server.post('/login', function (request, response, next) {
                         request.session.username = data[count].username;
 
                         response.redirect("/");
-                    }
-                    else {
+                    } else {
                         response.send('Incorrect Password');
                     }
                 }
-            }
-            else {
+            } else {
                 response.send('Incorrect Username');
             }
             response.end();
         });
-    }
-    else {
+    } else {
         response.send('Please Enter Username and Password Details');
         response.end();
     }
 
 });
 
-server.get('/logout', function (request, response, next) {
+server.get('/logout', function(request, response, next) {
 
     request.session.destroy();
 
@@ -86,8 +81,7 @@ server.get('/reports/packsinfo', (req, res) => {
     db.query(q, (e, d) => {
         if (e) {
             throw e
-        }
-        else {
+        } else {
             res.render('packages_info.ejs', { data: d })
         }
     })
@@ -98,8 +92,7 @@ server.get('/reports/packsnumber', (req, res) => {
     db.query(q, (e, d) => {
         if (e) {
             throw e
-        }
-        else {
+        } else {
             res.render('packages_number', { data: d })
         }
     })
@@ -109,12 +102,13 @@ server.get('/reports/packsnumber', (req, res) => {
 
 
 server.get('/admin/edit/:package_number', (req, res) => {
-    var package_number = req.params.package_number
+    var package_number = req.params.package_number;
     var q = `select * from package,transportation_method where package_number = ${package_number}`
-
     db.query(q, (e, d) => {
         if (e) throw e;
-        else { res.render('editPackage.ejs', { Action: 'Edit', d: d[0] }) }
+        else {
+            res.render('editPackage.ejs', { Action: 'Edit', d: d[0] });
+        }
     })
 })
 
@@ -132,27 +126,30 @@ server.post('/edit/:package_number', (req, res) => {
 
     var s = req.body.status;
 
-    q = `update package
+    q = `update package,transportation_method
     set weight = ${w}, destination = "${d}",
     dimensions = "${dimensions}",
     category = "${c}",
     insurance_amount = ${ia},
     delivery_date = "${dd}", from_user = "${fu}",
-    to_user = "${tu}" where package_number = ${package_number}`;
+    to_user = "${tu}",status = "${s}"
+    where package_number = ${package_number} and id = ${package_number}
+     `;
 
     db.query(q, (error, data) => {
-        if (error) { throw error; }
-        else {
+        if (error) { throw error; } else {
             //
         }
     })
 
     db.query(`update transportation_method set status = "${s}" where id = ${package_number}`, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.redirect('/admin/reports');
         }
     })
+
+
+
 
 
 
@@ -163,8 +160,7 @@ server.get('/admin/remove/:package_number', (req, res) => {
     var package_number = req.params.package_number;
     var q = `delete from package where package_number = ${package_number}`
     db.query(q, (e, d) => {
-        if (e) { throw e }
-        else {
+        if (e) { throw e } else {
             res.redirect('/admin/reports')
         }
     })
@@ -191,16 +187,14 @@ server.post('/add', (req, res) => {
     db.query(q, (e, d) => {
         if (e) {
             throw e
-        }
-        else {
+        } else {
             //
         }
     })
     const s = ['in-transist', 'damaged', 'lost', 'Delayed', 'in-transist', 'in-transist', 'in-transist', 'in-transist', 'in-transist', 'in-transist'];
     const random = Math.floor(Math.random() * s.length);
     db.query(`update transportation_method set status = "${s[0]}" where id = ${ss}`, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.redirect('/admin/reports')
         }
 
@@ -213,16 +207,15 @@ server.post('/add', (req, res) => {
 
 ///////////////////admin change user
 
-server.get("/admin/users", function (request, response, next) {
+server.get("/admin/users", function(request, response, next) {
 
     var query = "SELECT * FROM user_login ORDER BY user_id DESC";
 
-    db.query(query, function (error, data) {
+    db.query(query, function(error, data) {
 
         if (error) {
             throw error;
-        }
-        else {
+        } else {
             response.render('users', { title: 'Users info', action: 'list', data: data });
         }
 
@@ -230,13 +223,13 @@ server.get("/admin/users", function (request, response, next) {
 
 });
 
-server.get("/users/addU", function (request, response, next) {
+server.get("/users/addU", function(request, response, next) {
 
     response.render("users", { title: 'Insert User', action: 'addU' });
 
 });
 
-server.post("/addU", function (request, response, next) {
+server.post("/addU", function(request, response, next) {
 
     var id = request.body.user_id;
 
@@ -253,12 +246,11 @@ server.post("/addU", function (request, response, next) {
 	VALUES(${id}, "${username}","${email}", "${password}","${role}")
 	`;
 
-    db.query(query, function (error, data) {
+    db.query(query, function(error, data) {
 
         if (error) {
             throw error;
-        }
-        else {
+        } else {
             response.redirect("/");
         }
 
@@ -266,13 +258,13 @@ server.post("/addU", function (request, response, next) {
 
 });
 
-server.get('/editU/:user_id', function (request, response, next) {
+server.get('/editU/:user_id', function(request, response, next) {
 
     var id = request.params.user_id;
 
     var query = `SELECT * FROM user_login WHERE user_id = ${id}`;
 
-    db.query(query, function (error, data) {
+    db.query(query, function(error, data) {
 
         response.render('users', { title: 'Edit User', action: 'editU', data: data[0] });
 
@@ -280,7 +272,7 @@ server.get('/editU/:user_id', function (request, response, next) {
 
 });
 
-server.post('/editU/:user_id', function (request, response, next) {
+server.post('/editU/:user_id', function(request, response, next) {
 
     var id = request.params.user_id;
 
@@ -301,12 +293,11 @@ server.post('/editU/:user_id', function (request, response, next) {
 	WHERE user_id = ${id}
 	`;
 
-    db.query(query, function (error, data) {
+    db.query(query, function(error, data) {
 
         if (error) {
             throw error;
-        }
-        else {
+        } else {
             response.redirect("/");
         }
 
@@ -314,7 +305,7 @@ server.post('/editU/:user_id', function (request, response, next) {
 
 });
 
-server.get('/deleteU/:user_id', function (request, response, next) {
+server.get('/deleteU/:user_id', function(request, response, next) {
 
     var id = request.params.user_id;
 
@@ -322,12 +313,11 @@ server.get('/deleteU/:user_id', function (request, response, next) {
 	DELETE FROM user_login WHERE user_id = ${id}
 	`;
 
-    db.query(query, function (error, data) {
+    db.query(query, function(error, data) {
 
         if (error) {
             throw error;
-        }
-        else {
+        } else {
             response.redirect("/");
         }
 
@@ -339,8 +329,7 @@ server.get('/deleteU/:user_id', function (request, response, next) {
 server.get('/reports/payment', (req, res) => {
     q = `select * from retail_center order by Id`
     db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.render('payment', { data: d })
         }
     })
@@ -348,14 +337,13 @@ server.get('/reports/payment', (req, res) => {
 
 server.get('/pay/:id', (req, res) => {
     var id = req.params.id;
-    
+
     var q = `update retail_center set payment = 'T' where Id = ${id}`
 
     db.query(q, (e, d) => {
         if (e) {
             throw e;
-        }
-        else {
+        } else {
             res.redirect('/')
         }
     })
@@ -366,8 +354,7 @@ server.get('/pay/:id', (req, res) => {
 server.get('/reports/status', (req, res) => {
     var q = `select * from transportation_method order by id desc`
     db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.render('status', { data: d })
         }
     })
@@ -379,8 +366,7 @@ server.post('/reports/infoID', (req, res) => {
     console.log(p);
     q = `select * from package join transportation_method on package.package_number = transportation_method.id where package_number = ${p}`
     db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.render('searchID', { data: d });
         }
     })
@@ -393,8 +379,7 @@ server.post('/reports/infocategory', (req, res) => {
     q = `select * from package join transportation_method on package.package_number = transportation_method.id 
     where category = "${p}" and delivery_date between "${d1}" and "${d2}"`
     db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.render('searchID', { data: d });
         }
     })
@@ -406,8 +391,7 @@ server.post('/reports/infocity', (req, res) => {
     console.log(p);
     q = `select * from package join transportation_method on package.package_number = transportation_method.id where destination = "${p}"`
     db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.render('searchID', { data: d });
         }
     })
@@ -419,8 +403,7 @@ server.post('/reports/infodate', (req, res) => {
     console.log(p);
     q = `select * from package join transportation_method on package.package_number = transportation_method.id where delivery_date = "${p}"`
     db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.render('searchID', { data: d });
         }
     })
@@ -435,8 +418,7 @@ server.post('/reports/infostatus', (req, res) => {
     q = `select * from package join transportation_method on package.package_number = transportation_method.id
     where status = "${p}" and delivery_date between "${d1}" and "${d2}"`
     db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.render('searchID', { data: d });
         }
     })
@@ -449,8 +431,7 @@ server.post('/reports/numberofpacks', (req, res) => {
     q = `select * from package
     where delivery_date between "${d1}" and "${d2}" and category = "${c}"`
     db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.render('searchID', { data: d });
         }
     })
@@ -465,8 +446,7 @@ server.post('/reports/all', (req, res) => {
     q = `select * from package join transportation_method on package.package_number = transportation_method.id
     where category = "${t1}" and destination = "${t2}" and status = "${t3}"`
     db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.render('searchID', { data: d });
         }
     })
@@ -488,8 +468,7 @@ server.get('/customer/:ID/getmypacks', (req, res) => {
     console.log(username);
     db.query(`select * from package where from_user = "${username}"`, (e, d) => {
         console.log(d);
-        if (e) { throw e }
-        else {
+        if (e) { throw e } else {
             res.render('packages_infoU', { data: d })
         }
     })
@@ -517,8 +496,7 @@ server.post('/addpu', (req, res) => {
 
     db.query(`Insert into package(destination,weight,dimensions,category,insurance_amount,delivery_date,from_user,to_user) 
     values("${d}",${w},"${dd}","${c}",${w},"${currentDate}","${f}","${t}")`, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.redirect('/')
         }
     })
@@ -531,8 +509,7 @@ server.get('/customer/:ID/rpacks', (req, res) => {
     var username = req.params.ID;
     db.query(`select * from package join retail_center on package.package_number = retail_center.Id
      join transportation_method on package.package_number = transportation_method.id where package.to_user = "${username}"`, (e, d) => {
-        if (e) { throw e }
-        else {
+        if (e) { throw e } else {
             res.render('rpacks', { data: d })
         }
     })
@@ -544,8 +521,7 @@ server.get('/customer/:ID/update', (req, res) => {
 
     q = `select * from user_login where username = "${u}" `
     db.query(q, (e, d) => {
-        if (e) { throw e; }
-        else {
+        if (e) { throw e; } else {
             res.render('updateU', { data: d[0] })
         }
     })
@@ -557,9 +533,8 @@ server.post('/customer/:ID/update', (req, res) => {
     var email = req.body.user_email;
     var password = req.body.user_password;
     q = `update user_login set username = "${username}", user_password = "${password}", user_email = "${email}" where username = "${username}"`
-    db.query(q,(e,d)=>{
-        if (e){throw e}
-        else{
+    db.query(q, (e, d) => {
+        if (e) { throw e } else {
             res.redirect('/')
         }
     })
