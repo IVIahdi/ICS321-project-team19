@@ -126,14 +126,14 @@ server.post('/edit/:package_number', (req, res) => {
 
     var s = req.body.status;
 
-    q = `update package,transportation_method
+    q = `update package
     set weight = ${w}, destination = "${d}",
     dimensions = "${dimensions}",
     category = "${c}",
     insurance_amount = ${ia},
     delivery_date = "${dd}", from_user = "${fu}",
-    to_user = "${tu}",status = "${s}"
-    where package_number = ${package_number} and id = ${package_number}
+    to_user = "${tu}"
+    where package_number = ${package_number}
      `;
 
     db.query(q, (error, data) => {
@@ -142,7 +142,7 @@ server.post('/edit/:package_number', (req, res) => {
         }
     })
 
-    db.query(`update transportation_method set status = "${s}" where id = ${package_number}`, (e, d) => {
+    db.query(`update transportation_method set status = "${s}", id = ${package_number} where id = ${package_number}`, (e, d) => {
         if (e) { throw e; } else {
             res.redirect('/admin/reports');
         }
@@ -465,7 +465,6 @@ server.get('/customer/:ID', (req, res) => {
 
 server.get('/customer/:ID/getmypacks', (req, res) => {
     var username = req.params.ID;
-    console.log(username);
     db.query(`select * from package where from_user = "${username}"`, (e, d) => {
         console.log(d);
         if (e) { throw e } else {
@@ -508,7 +507,7 @@ server.post('/addpu', (req, res) => {
 server.get('/customer/:ID/rpacks', (req, res) => {
     var username = req.params.ID;
     db.query(`select * from package join retail_center on package.package_number = retail_center.Id
-     join transportation_method on package.package_number = transportation_method.id where package.to_user = "${username}"`, (e, d) => {
+     join transportation_method on package.package_number = transportation_method.id where package.to_user = "${username}" or package.from_user = "${username}"`, (e, d) => {
         if (e) { throw e } else {
             res.render('rpacks', { data: d })
         }
