@@ -8,5 +8,8 @@
             "name": "IVI",
             "database": "C:\\Users\\HP\\Desktop\\IVI\\IVIdb"
         }
+    ],
+    "dataworkspace.excludedProjects": [
+        "IVI/IVI.sqlproj"
     ]
 }
