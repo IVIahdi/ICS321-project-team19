@@ -113,6 +113,7 @@ server.get('/admin/edit/:package_number', (req, res) => {
 })
 
 server.post('/edit/:package_number', (req, res) => {
+
     var package_number = req.params.package_number;
 
     var w = req.body.weight;
@@ -157,6 +158,8 @@ server.post('/edit/:package_number', (req, res) => {
 })
 
 server.get('/admin/remove/:package_number', (req, res) => {
+    // This code is to remove a package from the system
+    // DELETE FROM PACKAGE WHERE PACKAGE_NUMBER = (SELECTED_ID);
     var package_number = req.params.package_number;
     var q = `delete from package where package_number = ${package_number}`
     db.query(q, (e, d) => {
@@ -171,6 +174,8 @@ server.get('/admin/addpackage', (req, res) => {
 })
 
 server.post('/add', (req, res) => {
+    // This code is to add new package to the system
+    // INSET INTO PACKAGE VALUES(...);
     var pn = req.body.package_number;
     var ss = pn
     var w = req.body.weight;
