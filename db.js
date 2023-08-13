@@ -1,15 +1,22 @@
-const mysql = require('mysql')
+// const sql = require('mssql');
 
-var connection = mysql.createConnection({
-host: 'localhost',
-user: 'root',
-password: 'root',
-database: 'IVI'
-});
+// const config = {
+//     server: 'MSSQLSERVER01', // or your SQL Server hostname
+//     database: 'ivi',
+//     options: {
+//         encrypt: true, // Use this option if you're using Azure
+//         trustServerCertificate: true // Use this option if you're using Azure
+//     }
+// };
 
-connection.connect(function(err){
-    if (err){throw err;}
-    else{console.log("Connected");}
-});
+// const pool = new sql.ConnectionPool(config);
 
-module.exports = connection;
+// pool.connect(err => {
+//     if (err) {
+//         console.error('Database connection failed:', err);
+//     } else {
+//         console.log('Connected to the database.');
+//     }
+// });
+
+// module.exports = pool;

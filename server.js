@@ -1,11 +1,25 @@
 const express = require("express");
-const db = require(__dirname + '/db');
-
-var session = require('express-session');
+const sql = require('mssql');
+const session = require('express-session');
+const dbConfig = {  
+    server: 'MSSQLSERVER01',
+    authentication: {
+        type: 'default',
+        options: {
+            userName: 'sa',
+            password: '123123'
+        }
+    },
+    options: {
+        database: 'ivi',
+        port: 1234  //your port number
+    }
+}; ;
 
 const server = express();
-const port = 8000;
-server.set('view engine', 'ejs')
+const port = 7000;
+
+server.set('view engine', 'ejs');
 server.use(express.urlencoded({ extended: false }));
 server.use(express.static("public"));
 server.use("/public", express.static(__dirname + "/views/public"));
@@ -15,48 +29,41 @@ server.use(session({
     saveUninitialized: true
 }));
 
+
 server.get('/', (req, res) => {
-    res.render('index', { title: 'Welcome to IVI\'s company', session: req.session })
-})
-
-
-server.post('/login', function(request, response, next) {
-
-    var username = request.body.username;
-
-    var password = request.body.password;
-
-    if (username && password) {
-        query = `
-        SELECT * FROM user_login 
-        WHERE username = "${username}"
-        `;
-
-        db.query(query, function(error, data) {
-
-            if (data.length > 0) {
-                for (var count = 0; count < data.length; count++) {
-                    if (data[count].user_password == password) {
-                        request.session.user_id = data[count].user_id;
-                        request.session.role = data[count].role;
-                        request.session.username = data[count].username;
-
-                        response.redirect("/");
-                    } else {
-                        response.send('Incorrect Password');
-                    }
-                }
-            } else {
-                response.send('Incorrect Username');
-            }
-            response.end();
-        });
-    } else {
-        response.send('Please Enter Username and Password Details');
-        response.end();
-    }
-
+    res.render('index', { title: 'Welcome to IVI\'s company', session: req.session });
 });
+
+server.post('/login', async (request, response, next) => {
+    const username = request.body.username;
+    const password = request.body.password;
+
+    try {
+        const pool = await sql.connect(dbConfig);
+        const result = await pool.request()
+            .input('username', sql.NVarChar, username)
+            .query('SELECT * FROM user_login WHERE username = @username');
+
+        if (result.recordset.length > 0) {
+            const user = result.recordset[0];
+
+            if (user.user_password === password) {
+                request.session.user_id = user.user_id;
+                request.session.role = user.role;
+                request.session.username = user.username;
+                response.redirect("/");
+            } else {
+                response.send('Incorrect Password');
+            }
+        } else {
+            response.send('Incorrect Username');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        response.send('An error occurred');
+    }
+});
+
 
 server.get('/logout', function(request, response, next) {
 
