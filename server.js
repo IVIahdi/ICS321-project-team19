@@ -2,22 +2,22 @@ const express = require("express");
 const sql = require('mssql');
 const session = require('express-session');
 const dbConfig = {  
-    server: 'MSSQLSERVER01',
+    server: 'IVIahdi\\MSSQLSERVER01',
     authentication: {
         type: 'default',
         options: {
-            userName: 'sa',
+            userName: 'ivi',
             password: '123123'
         }
     },
     options: {
-        database: 'ivi',
-        port: 1234  //your port number
+        database: 'dbo.ivi',
+        port: 1433  //your port number
     }
 }; ;
 
 const server = express();
-const port = 7000;
+const port = 1433;
 
 server.set('view engine', 'ejs');
 server.use(express.urlencoded({ extended: false }));
